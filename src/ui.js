@@ -303,7 +303,7 @@ if (typeof document !== 'undefined') (function(){
     var b = x.b;
     var cells = SEL.map(function(s){
       var c = x.cells[s];
-      if (!c) return '<span class="cell na"><span class="cl">' + SEG_SHORT[s] + '</span><span class="cr">Not offered</span><span class="cc">—</span></span>';
+      if (!c) return '<span class="cell na"><span class="cl">' + SEG_SHORT[s] + '</span><span class="cr">' + (b.unl && b.unl.indexOf(s) >= 0 ? 'Rate not published' : 'Not offered') + '</span><span class="cc">—</span></span>';
       return '<span class="cell' + (c.total - segMin[s] < 0.005 ? ' best' : '') + '"><span class="cl">' + SEG_SHORT[s] + '</span><span class="cr">' + esc(shortRule(b.r[s])) + '</span><span class="cc">' + inr(c.total) + '</span></span>';
     }).join('');
     var brk = SEL.filter(function(s){ return x.cells[s]; }).map(function(s){ var c = x.cells[s]; return '<tr><td>' + SEG_SHORT[s] + '</td><td>' + inr(c.brok) + '</td><td>' + inr(c.gst) + '</td><td>' + inr(c.stt) + '</td><td>' + inr(c.other) + '</td><td>' + (s === 'del' ? (c.dpMissing ? 'n/a' : inr(c.dp)) : '—') + '</td><td><b>' + inr(c.total) + '</b></td></tr>'; }).join('');

@@ -114,7 +114,7 @@
       <div class="panel" aria-live="polite" style="display:flex;flex-direction:column;gap:12px">
         <div id="verdict"></div>
         <ol class="blist" id="rows"></ol>
-        <p class="rows-label" id="partialLabel" hidden>Doesn’t offer everything you picked</p>
+        <p class="rows-label" id="partialLabel" hidden>Doesn’t offer, or doesn’t publish a rate for, everything you picked</p>
         <ol class="blist" id="partial"></ol>
       </div>
     </div>
@@ -146,6 +146,7 @@
 
   <footer>
     <p>Stock list and closing prices: NSE bhavcopy for <span id="footDate">{{PRICES_DATE}}</span> (<span id="footCount">{{STOCK_COUNT}}</span> listed stocks and ETFs). Prices are end-of-day closes and refresh each trading day; broker rates are re-checked daily and news hourly. Brokers change rate cards often and some plans are only for new accounts. Your contract note is the final word. DalalScope compares published prices; it is not investment advice.</p>
+    <ul class="foot-site">{{SITE_LINKS}}</ul>
     <nav aria-label="Broker charges"><p class="foot-h">Brokerage charges by broker</p><ul class="foot-brokers">{{BROKER_LINKS}}</ul></nav>
     <p class="foot-h">Official rate cards</p>
     <ul>

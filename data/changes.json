@@ -1,0 +1,16 @@
+{
+ "items": [
+  {
+   "at": "2026-10-26T19:20:22Z",
+   "changes": [
+    "Added 10 broker plans: Flattrade, Sahi, Alice Blue, Samco, Sharekhan, IIFL Capital (Investor Plan), Tradejini, INDmoney, ProStocks (Flat Fee Plan) and Bajaj Broking (Freedom Pack)"
+   ]
+  },
+  {
+   "at": "2026-10-26T18:20:00Z",
+   "changes": [
+    "Launched with 15 broker plans, checked against each broker’s official charges page"
+   ]
+  }
+ ]
+}

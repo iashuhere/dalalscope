@@ -1,7 +1,7 @@
 {
- "updatedAt": "2026-10-26T17:45:17Z",
- "checkedAt": "2026-10-26T17:45:17Z",
- "note": "Rule types: z=free, f=flat Rs a per order, l=lower of Rs a or p (fraction) of order value (mn=true adds Rs 5 minimum), p=p fraction of value, lot=Rs a per lot. Segments: del,intra,fut,opt,cfut,copt,mfut,mopt; null = not offered.",
+ "updatedAt": "2026-10-26T19:19:21Z",
+ "checkedAt": "2026-10-26T19:19:21Z",
+ "note": "Rule types: z=free, f=flat Rs a per order, l=lower of Rs a or p (fraction) of order value (mn=true adds Rs 5 minimum), p=p fraction of value, lot=Rs a per lot. Segments: del,intra,fut,opt,cfut,copt,mfut,mopt; null = not offered. unl = segments the broker offers but does not publish a rate for.",
  "list": [
   {
    "id": "zerodha",
@@ -856,6 +856,563 @@
      "CompareShareBrokers",
      "https://comparesharebrokers.com/review/paytm-money"
     ]
+   ]
+  },
+  {
+   "id": "flattrade",
+   "name": "Flattrade",
+   "plan": "Standard",
+   "src": "off",
+   "amc": "₹0",
+   "dp": 23.6,
+   "news": "Flattrade",
+   "r": {
+    "del": {
+     "t": "z"
+    },
+    "intra": {
+     "t": "z"
+    },
+    "fut": {
+     "t": "z"
+    },
+    "opt": {
+     "t": "z"
+    },
+    "cfut": {
+     "t": "z"
+    },
+    "copt": {
+     "t": "z"
+    },
+    "mfut": {
+     "t": "z"
+    },
+    "mopt": {
+     "t": "z"
+    }
+   },
+   "notes": [
+    "Zero brokerage in every segment, including F&O and commodities.",
+    "Trading account opening is ₹200 + GST, collected at your first pay-in. Demat opening and AMC are free.",
+    "DP charge is ₹20 + GST per stock sold (₹23.60)."
+   ],
+   "links": [
+    [
+     "flattrade.in/pricing",
+     "https://flattrade.in/pricing"
+    ],
+    [
+     "Flattrade DP charges",
+     "https://flattrade.in/support/knowledge-base/how-dp-charges-are-charged-in-flattrade/"
+    ]
+   ]
+  },
+  {
+   "id": "sahi",
+   "name": "Sahi",
+   "plan": "Standard",
+   "src": "off",
+   "amc": "₹0",
+   "dp": 15.93,
+   "news": "Sahi",
+   "r": {
+    "del": {
+     "t": "l",
+     "a": 10,
+     "p": 0.0005,
+     "mn": false
+    },
+    "intra": {
+     "t": "l",
+     "a": 10,
+     "p": 0.0005,
+     "mn": false
+    },
+    "fut": {
+     "t": "f",
+     "a": 10
+    },
+    "opt": {
+     "t": "f",
+     "a": 10
+    },
+    "cfut": {
+     "t": "l",
+     "a": 10,
+     "p": 0.0005,
+     "mn": false
+    },
+    "copt": {
+     "t": "f",
+     "a": 10
+    },
+    "mfut": {
+     "t": "l",
+     "a": 10,
+     "p": 0.0005,
+     "mn": false
+    },
+    "mopt": {
+     "t": "f",
+     "a": 10
+    }
+   },
+   "notes": [
+    "₹10 or 0.05% per order (whichever is lower) on stocks; flat ₹10 per options order.",
+    "Zero brokerage for the first 30 days after you open an account.",
+    "Auto square-off ₹10 per order; margin pledge ₹15 + GST per ISIN."
+   ],
+   "links": [
+    [
+     "sahi.com/pricing",
+     "https://www.sahi.com/pricing"
+    ],
+    [
+     "Sahi charges FAQ",
+     "https://sahi.com/faq/pricing-and-brokerage/what-are-the-trading-investing-charges-for-sahi"
+    ]
+   ]
+  },
+  {
+   "id": "aliceblue",
+   "name": "Alice Blue",
+   "plan": "Standard",
+   "src": "off",
+   "amc": "₹0",
+   "dp": 17.7,
+   "news": "Alice Blue",
+   "r": {
+    "del": {
+     "t": "l",
+     "a": 20,
+     "p": 0.025,
+     "mn": false
+    },
+    "intra": {
+     "t": "l",
+     "a": 20,
+     "p": 0.0005,
+     "mn": false
+    },
+    "fut": {
+     "t": "l",
+     "a": 20,
+     "p": 0.0005,
+     "mn": false
+    },
+    "opt": {
+     "t": "f",
+     "a": 20
+    },
+    "cfut": {
+     "t": "l",
+     "a": 20,
+     "p": 0.0005,
+     "mn": false
+    },
+    "copt": {
+     "t": "f",
+     "a": 20
+    },
+    "mfut": {
+     "t": "l",
+     "a": 20,
+     "p": 0.0005,
+     "mn": false
+    },
+    "mopt": {
+     "t": "f",
+     "a": 20
+    }
+   },
+   "notes": [
+    "Delivery is ₹20 per order (or 2.5% on very small orders), not free.",
+    "Bracket orders cost ₹4 + GST per order. DP charge is ₹15 + GST per stock sold.",
+    "Currency and commodity rates are from a comparison site; the pricing page does not show them."
+   ],
+   "links": [
+    [
+     "aliceblueonline.com/pricing",
+     "https://aliceblueonline.com/pricing/"
+    ]
+   ]
+  },
+  {
+   "id": "samco",
+   "name": "Samco",
+   "plan": "Standard",
+   "src": "off",
+   "amc": "₹400/yr (free year one)",
+   "dp": 11.8,
+   "news": "Samco",
+   "r": {
+    "del": {
+     "t": "l",
+     "a": 20,
+     "p": 0.025,
+     "mn": false
+    },
+    "intra": {
+     "t": "l",
+     "a": 20,
+     "p": 0.0025,
+     "mn": false
+    },
+    "fut": {
+     "t": "f",
+     "a": 20
+    },
+    "opt": {
+     "t": "f",
+     "a": 20
+    },
+    "cfut": {
+     "t": "f",
+     "a": 20
+    },
+    "copt": {
+     "t": "f",
+     "a": 20
+    },
+    "mfut": {
+     "t": "f",
+     "a": 20
+    },
+    "mopt": {
+     "t": "f",
+     "a": 20
+    }
+   },
+   "notes": [
+    "Flat ₹20 per order in every segment, including delivery (2.5% cap on tiny orders).",
+    "Cash-market trades need a 20% upfront margin of the trade value.",
+    "DP charge of ₹10 + GST per sell is from a comparison site; the pricing page does not list it."
+   ],
+   "links": [
+    [
+     "Samco brokerage charges",
+     "https://www.samco.in/help-support/article/what-are-the-brokerage-charges-at-samco/"
+    ]
+   ]
+  },
+  {
+   "id": "sharekhan",
+   "name": "Sharekhan",
+   "plan": "Default plan",
+   "src": "off",
+   "amc": "₹400/yr (free year one)",
+   "dp": 0,
+   "news": "Sharekhan",
+   "r": {
+    "del": {
+     "t": "p",
+     "p": 0.003
+    },
+    "intra": {
+     "t": "p",
+     "p": 0.0002
+    },
+    "fut": {
+     "t": "p",
+     "p": 0.0002
+    },
+    "opt": {
+     "t": "lot",
+     "a": 39
+    },
+    "cfut": {
+     "t": "p",
+     "p": 0.0002
+    },
+    "copt": {
+     "t": "lot",
+     "a": 5
+    },
+    "mfut": {
+     "t": "p",
+     "p": 0.0005
+    },
+    "mopt": {
+     "t": "f",
+     "a": 75
+    }
+   },
+   "notes": [
+    "Percentage brokerage: 0.30% on delivery and ₹39 per options lot, so large trades cost far more than at flat-fee brokers.",
+    "Commodity futures are 0.10% on one side and commodity options 1% of premium or ₹150 (whichever is higher) on one side; shown here averaged over buy and sell.",
+    "No DP charge on sales made through Sharekhan."
+   ],
+   "links": [
+    [
+     "sharekhan.com/pricing",
+     "https://sharekhan.com/pricing"
+    ]
+   ]
+  },
+  {
+   "id": "iifl",
+   "name": "IIFL Capital",
+   "plan": "Investor Plan",
+   "src": "off",
+   "amc": "₹0 year one, then ₹250 + GST",
+   "dp": 29.5,
+   "news": "IIFL Capital",
+   "r": {
+    "del": {
+     "t": "p",
+     "p": 0.0025
+    },
+    "intra": {
+     "t": "p",
+     "p": 0.00025
+    },
+    "fut": {
+     "t": "p",
+     "p": 0.00025
+    },
+    "opt": {
+     "t": "lot",
+     "a": 25
+    },
+    "cfut": {
+     "t": "lot",
+     "a": 20
+    },
+    "copt": {
+     "t": "lot",
+     "a": 8
+    },
+    "mfut": {
+     "t": "p",
+     "p": 0.00025
+    },
+    "mopt": {
+     "t": "lot",
+     "a": 80
+    }
+   },
+   "notes": [
+    "0.25% on delivery and ₹25 per options lot on the default Investor Plan.",
+    "Commodity options are charged per lot by commodity: ₹125 for gold, ₹80 for silver and crude oil (₹80 used here).",
+    "DP charge is ₹25 + GST per stock sold."
+   ],
+   "links": [
+    [
+     "iiflcapital.com/brokerage-charges",
+     "https://www.iiflcapital.com/brokerage-charges"
+    ]
+   ]
+  },
+  {
+   "id": "tradejini",
+   "name": "Tradejini",
+   "plan": "Standard",
+   "src": "off",
+   "amc": "₹300 + GST/yr",
+   "dp": 14.75,
+   "news": "Tradejini",
+   "r": {
+    "del": {
+     "t": "l",
+     "a": 20,
+     "p": 0.001,
+     "mn": true
+    },
+    "intra": {
+     "t": "l",
+     "a": 20,
+     "p": 0.0005,
+     "mn": true
+    },
+    "fut": {
+     "t": "l",
+     "a": 20,
+     "p": 0.0005,
+     "mn": false
+    },
+    "opt": {
+     "t": "f",
+     "a": 20
+    },
+    "cfut": {
+     "t": "f",
+     "a": 20
+    },
+    "copt": {
+     "t": "f",
+     "a": 20
+    },
+    "mfut": {
+     "t": "f",
+     "a": 20
+    },
+    "mopt": {
+     "t": "f",
+     "a": 20
+    }
+   },
+   "notes": [
+    "Delivery is ₹20 or 0.1% per order (whichever is lower), with a ₹5 minimum.",
+    "Currency and commodity are ₹20 per order.",
+    "DP charge is ₹12.50 + GST per stock sold."
+   ],
+   "links": [
+    [
+     "tradejini.com/pricing",
+     "https://tradejini.com/pricing/"
+    ]
+   ]
+  },
+  {
+   "id": "indmoney",
+   "name": "INDmoney",
+   "plan": "Standard",
+   "src": "off",
+   "amc": "₹0",
+   "dp": 21.83,
+   "news": "INDmoney",
+   "r": {
+    "del": {
+     "t": "l",
+     "a": 20,
+     "p": 0.001,
+     "mn": false
+    },
+    "intra": {
+     "t": "l",
+     "a": 20,
+     "p": 0.001,
+     "mn": false
+    },
+    "fut": {
+     "t": "f",
+     "a": 20
+    },
+    "opt": {
+     "t": "f",
+     "a": 20
+    },
+    "cfut": null,
+    "copt": null,
+    "mfut": {
+     "t": "f",
+     "a": 20
+    },
+    "mopt": {
+     "t": "f",
+     "a": 20
+    }
+   },
+   "notes": [
+    "Stocks cost 0.1% or ₹20 per order (whichever is lower), with a ₹2 minimum.",
+    "DP charge is ₹18.50 + GST per stock sold, charged once per stock per day.",
+    "Commodity rates are from a comparison site; currency derivatives are not listed."
+   ],
+   "links": [
+    [
+     "indmoney.com/pricing",
+     "https://www.indmoney.com/pricing"
+    ]
+   ],
+   "unl": [
+    "cfut",
+    "copt"
+   ]
+  },
+  {
+   "id": "prostocks",
+   "name": "ProStocks",
+   "plan": "Flat Fee Plan",
+   "src": "off",
+   "amc": "₹0",
+   "dp": 23.6,
+   "news": "ProStocks",
+   "r": {
+    "del": {
+     "t": "z"
+    },
+    "intra": {
+     "t": "f",
+     "a": 15
+    },
+    "fut": {
+     "t": "f",
+     "a": 15
+    },
+    "opt": {
+     "t": "f",
+     "a": 15
+    },
+    "cfut": null,
+    "copt": null,
+    "mfut": null,
+    "mopt": null
+   },
+   "notes": [
+    "Free delivery and ₹15 per order on intraday and F&O.",
+    "Monthly plans offer unlimited equity and F&O trading for ₹899 a month, or currency for ₹499 a month.",
+    "Per-order currency and commodity rates are not published. DP charge is ₹20 + GST per stock sold."
+   ],
+   "links": [
+    [
+     "prostocks.com/pricing",
+     "https://www.prostocks.com/pricing"
+    ]
+   ],
+   "unl": [
+    "cfut",
+    "copt",
+    "mfut",
+    "mopt"
+   ]
+  },
+  {
+   "id": "bajaj",
+   "name": "Bajaj Broking",
+   "plan": "Freedom Pack",
+   "src": "off",
+   "amc": "₹0",
+   "dp": null,
+   "news": "Bajaj Broking",
+   "r": {
+    "del": {
+     "t": "f",
+     "a": 20
+    },
+    "intra": {
+     "t": "f",
+     "a": 20
+    },
+    "fut": {
+     "t": "f",
+     "a": 20
+    },
+    "opt": {
+     "t": "f",
+     "a": 20
+    },
+    "cfut": null,
+    "copt": null,
+    "mfut": null,
+    "mopt": null
+   },
+   "notes": [
+    "Flat ₹20 per order on delivery, intraday and F&O on the Freedom Pack.",
+    "The Professional Pack cuts this to ₹10 per order; the pricing page does not show pack fees.",
+    "Currency, commodity and DP charges are not on the pricing page, so DP is left out here."
+   ],
+   "links": [
+    [
+     "bajajbroking.in/pricing",
+     "https://www.bajajbroking.in/pricing"
+    ]
+   ],
+   "unl": [
+    "cfut",
+    "copt",
+    "mfut",
+    "mopt"
    ]
   }
  ]

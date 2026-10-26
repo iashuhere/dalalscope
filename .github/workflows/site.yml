@@ -20,6 +20,8 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.prices.outputs.changed }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -29,6 +31,7 @@ jobs:
         if: github.event_name != 'push'
         run: python scripts/build_prices.py
       - name: Commit new prices
+        id: prices
         if: github.event_name != 'push'
         run: |
           git config user.name "rate-card-bot"
@@ -37,6 +40,7 @@ jobs:
           if git diff --cached --quiet; then echo "No price change"; exit 0; fi
           git commit -m "prices: NSE close $(python -c "import json;print(json.load(open('data/prices-meta.json'))['date'])")"
           for i in 1 2 3; do git pull --rebase -q && git push -q && break; sleep 5; done
+          echo "changed=data/prices.json" >> "$GITHUB_OUTPUT"
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
@@ -52,9 +56,35 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    outputs:
+      page_url: ${{ steps.deployment.outputs.page_url }}
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+  ping:
+    # tell IndexNow search engines (Bing, Yandex and others) which pages just changed
+    needs: [build, deploy]
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Submit changed pages to IndexNow
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SITE_URL: ${{ needs.deploy.outputs.page_url }}
+        run: |
+          if [ "${{ github.event_name }}" = "push" ]; then
+            if [ "${{ github.event.before }}" = "0000000000000000000000000000000000000000" ]; then CHANGED=ALL
+            else CHANGED=$(gh api "repos/${{ github.repository }}/compare/${{ github.event.before }}...${{ github.sha }}" --jq '.files[].filename' | tr '\n' ' '); fi
+          else
+            CHANGED="${{ needs.build.outputs.changed }}"
+          fi
+          export CHANGED
+          node scripts/build_site.js > /dev/null
+          node scripts/indexnow.js

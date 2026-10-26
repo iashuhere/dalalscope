@@ -11,7 +11,8 @@ import datetime, json, os, re, sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA = os.path.join(ROOT, 'data')
 WHO = ['Zerodha', 'Groww', 'Angel One', 'Upstox', 'Dhan', 'FYERS', '5paisa', 'Kotak Neo', 'HDFC Sky', 'ICICI Direct',
-       'Motilal Oswal', 'm.Stock', 'Shoonya', 'Paytm Money', 'SEBI', 'Industry']
+       'Motilal Oswal', 'm.Stock', 'Shoonya', 'Paytm Money', 'Flattrade', 'Sahi', 'Alice Blue', 'Samco', 'Sharekhan',
+       'IIFL Capital', 'Tradejini', 'INDmoney', 'ProStocks', 'Bajaj Broking', 'SEBI', 'Industry']
 TAGS = ['Pricing', 'New product', 'Rule change', 'Tax change', 'Market share', 'Growth', 'Outage', 'Penalty', 'Rebrand']
 SEGS = ['del', 'intra', 'fut', 'opt', 'cfut', 'copt', 'mfut', 'mopt']
 KEEP = 40
@@ -110,6 +111,35 @@ def valid_rule(r):
     return True
 
 
+SEG_NAME = {'del': 'delivery', 'intra': 'intraday', 'fut': 'futures', 'opt': 'options', 'cfut': 'currency futures',
+            'copt': 'currency options', 'mfut': 'commodity futures', 'mopt': 'commodity options'}
+
+
+def describe(r):
+    if r is None:
+        return 'not offered'
+    pct = lambda p: ('%.4f' % (p * 100)).rstrip('0').rstrip('.') + '%'
+    t = r['t']
+    if t == 'z':
+        return '₹0'
+    if t == 'f':
+        return '₹%g per order' % r['a']
+    if t == 'l':
+        return '₹%g or %s (whichever is lower)%s' % (r['a'], pct(r['p']), ', min ₹5' if r.get('mn') else '')
+    if t == 'p':
+        return '%s of trade value' % pct(r['p'])
+    if t == 'lot':
+        return '₹%g per lot' % r['a']
+    return '?'
+
+
+def log_changes(lines):
+    log = load('changes.json', {'items': []})
+    log['items'].insert(0, {'at': now(), 'changes': lines})
+    log['items'] = log['items'][:200]
+    save('changes.json', log)
+
+
 def cmd_brokers(path):
     new = json.load(open(path, encoding='utf-8'))
     if isinstance(new, dict):
@@ -128,12 +158,20 @@ def cmd_brokers(path):
             if not valid_rule(b['r'].get(s)):
                 die('%s %s has an invalid rule %r' % (b['id'], s, b['r'].get(s)))
             if b['r'].get(s) != o['r'].get(s):
-                changes.append('%s %s: %r -> %r' % (b['id'], s, o['r'].get(s), b['r'].get(s)))
+                changes.append('%s %s: %s → %s' % (b['name'] + ('' if b['plan'] == 'Standard' else ' (' + b['plan'] + ')'), SEG_NAME[s], describe(o['r'].get(s)), describe(b['r'].get(s))))
         if not (b.get('dp') is None or (isinstance(b['dp'], (int, float)) and 0 <= b['dp'] <= 100)):
             die('%s dp must be null or 0-100 rupees' % b['id'])
-        for k in ('dp', 'amc', 'notes', 'links'):
+        unl = b.get('unl', [])
+        if not (isinstance(unl, list) and all(s in SEGS and b['r'].get(s) is None for s in unl)):
+            die('%s unl must list only segments whose rule is null' % b['id'])
+        for k in ('dp', 'amc', 'notes', 'links', 'unl'):
             if b.get(k) != o.get(k):
-                changes.append('%s %s changed' % (b['id'], k))
+                if k == 'dp':
+                    changes.append('%s DP charge per sell: %s → %s' % (b['name'], 'not published' if o.get('dp') is None else '₹%.2f' % o['dp'], 'not published' if b.get('dp') is None else '₹%.2f' % b['dp']))
+                elif k == 'amc':
+                    changes.append('%s demat AMC: %s → %s' % (b['name'], o.get('amc'), b.get('amc')))
+                else:
+                    changes.append('%s %s updated' % (b['name'], k))
         for l in b['links']:
             if not (isinstance(l, list) and len(l) == 2 and re.fullmatch(r'https://[^\s"\'<>]+', l[1])):
                 die('%s has a bad link %r' % (b['id'], l))
@@ -144,6 +182,7 @@ def cmd_brokers(path):
         doc.update({'list': new, 'updatedAt': now(), 'checkedAt': now()})
         save('brokers.json', doc)
         st['ratesUpdatedAt'] = now()
+        log_changes([c for c in changes if not c.endswith(' notes updated') and not c.endswith(' links updated')] or ['Notes and source links updated'])
     save('status.json', st)
     print('%d change(s)' % len(changes))
     for c in changes:

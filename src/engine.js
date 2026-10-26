@@ -197,7 +197,8 @@ function cleanBrokers(list){
     out.push({ id:b.id, name:b.name, plan: typeof b.plan === 'string' ? b.plan : 'Standard', src: b.src === 'agg' ? 'agg' : 'off',
       amc: b.amc == null ? '—' : String(b.amc), dp: typeof b.dp === 'number' && b.dp >= 0 ? b.dp : null, news: typeof b.news === 'string' ? b.news : b.name, r:r,
       notes: Array.isArray(b.notes) ? b.notes.filter(function(n){ return typeof n === 'string'; }).slice(0, 6) : [],
-      links: Array.isArray(b.links) ? b.links.filter(function(l){ return Array.isArray(l) && typeof l[0] === 'string' && okUrl(l[1]); }).slice(0, 4) : [] });
+      links: Array.isArray(b.links) ? b.links.filter(function(l){ return Array.isArray(l) && typeof l[0] === 'string' && okUrl(l[1]); }).slice(0, 4) : [],
+      unl: Array.isArray(b.unl) ? b.unl.filter(function(s){ return SEGS.indexOf(s) >= 0 && r[s] === null; }) : [] });
   }
   return out;
 }
