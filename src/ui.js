@@ -317,6 +317,80 @@ if (typeof document !== 'undefined') (function(){
   renderSizes(); renderSeg();
   setTimeout(function(){ snapLock(); $('app').classList.remove('boot'); }, 650);
 
+  /* ---------- guided tips ----------
+     A short walkthrough of small pop-ups pointing at each part of the page. It plays once
+     on a first visit; "How to use" in the top bar replays it. */
+  var TOUR = [
+    { el: function(){ return inp.closest('.field'); }, t: 'Pick a stock', b: 'Type a company name or NSE symbol, or tap a popular stock. Its latest NSE closing price fills in for you.' },
+    { el: function(){ return document.querySelector('.qty'); }, t: 'Set the quantity', b: 'Enter how many shares you are trading. The minus and plus buttons step it down or up.' },
+    { el: function(){ return $('tDel').parentNode; }, t: 'Delivery or intraday', b: 'Choose delivery if you hold the shares overnight or longer, intraday if you square off the same day.' },
+    { el: function(){ return $('sBuy').parentNode; }, t: 'Buy, sell or both', b: 'Pick buy + sell to see a full round trip. The DP charge only applies when you sell delivery shares.' },
+    { el: function(){ return document.querySelector('.lockon'); }, t: 'Your cheapest broker', b: 'The lowest all-in cost for this exact trade, taxes included. The ring shows how much of it is tax and exchange fees.' },
+    { el: function(){ return document.querySelector('#sRows > li'); }, t: 'Compare every broker', b: function(){ return 'All ' + BROKERS.length + ' plans, cheapest first. Open any broker for the full breakdown and the charges to watch out for.'; } },
+    { el: function(){ return $('tiles'); }, t: 'Trade F&O or commodities?', b: 'Tick the segments you trade to rank brokers on those instead. Change trade sizes underneath.' }
+  ];
+  var tourI = -1, tourEl = null, ringEl = null, tourKbd = false;
+  function tourParts(){ return { back: tourEl.querySelector('.back'), next: tourEl.querySelector('.next') }; }
+  function buildTour(){
+    ringEl = document.createElement('div'); ringEl.className = 'tour-ring'; ringEl.setAttribute('aria-hidden', 'true');
+    tourEl = document.createElement('div'); tourEl.className = 'tour'; tourEl.setAttribute('role', 'dialog'); tourEl.setAttribute('aria-labelledby', 'tourT'); tourEl.setAttribute('aria-describedby', 'tourB');
+    tourEl.innerHTML = '<span class="tour-arrow" aria-hidden="true"></span><div aria-live="polite"><p class="tour-step" id="tourS"></p><h3 id="tourT"></h3><p class="tour-b" id="tourB"></p></div>' +
+      '<div class="tour-btns"><button type="button" class="skip">Skip tips</button><button type="button" class="back">Back</button><button type="button" class="next">Next</button></div>';
+    document.body.appendChild(ringEl); document.body.appendChild(tourEl);
+    tourEl.querySelector('.skip').addEventListener('click', endTour);
+    tourParts().back.addEventListener('click', function(){ showTour(tourI - 1); });
+    tourParts().next.addEventListener('click', function(){ if (tourI < TOUR.length - 1) showTour(tourI + 1); else endTour(); });
+  }
+  function placeTour(){
+    if (tourI < 0 || !tourEl) return;
+    var t = TOUR[tourI].el(); if (!t) return;
+    var r = t.getBoundingClientRect(), sx = window.scrollX, sy = window.scrollY, pad = 6, gap = 14;
+    ringEl.style.left = (r.left + sx - pad) + 'px'; ringEl.style.top = (r.top + sy - pad) + 'px';
+    ringEl.style.width = (r.width + pad * 2) + 'px'; ringEl.style.height = (r.height + pad * 2) + 'px';
+    var vw = document.documentElement.clientWidth, bw = tourEl.offsetWidth, bh = tourEl.offsetHeight;
+    var left = Math.min(Math.max(16, r.left + r.width / 2 - bw / 2), vw - bw - 16);
+    var above = r.top + sy - pad - gap - bh >= 8;
+    tourEl.style.left = (left + sx) + 'px';
+    tourEl.style.top = (above ? r.top + sy - pad - gap - bh : r.bottom + sy + pad + gap) + 'px';
+    tourEl.setAttribute('data-side', above ? 'above' : 'below');
+    tourEl.querySelector('.tour-arrow').style.left = (Math.min(Math.max(r.left + r.width / 2 - left, 20), bw - 20) - 7) + 'px';
+  }
+  function showTour(i){
+    var s = TOUR[i], t = s && s.el();
+    if (!t) { endTour(); return; }
+    if (!tourEl) buildTour();
+    tourI = i;
+    $('tourS').textContent = 'Tip ' + (i + 1) + ' of ' + TOUR.length;
+    $('tourT').textContent = s.t;
+    $('tourB').textContent = typeof s.b === 'function' ? s.b() : s.b;
+    var p = tourParts();
+    p.back.hidden = i === 0;
+    p.next.textContent = i === TOUR.length - 1 ? 'Got it' : 'Next';
+    placeTour();
+    /* bring the target into view with room for the pop-up above it, but don't move the page if it already fits */
+    var r = t.getBoundingClientRect(), need = tourEl.offsetHeight + 40;
+    if (r.top < need || r.bottom > window.innerHeight - 16) window.scrollTo({ top: Math.max(0, window.scrollY + r.top - need), behavior: RM.matches ? 'auto' : 'smooth' });
+    tourEl.classList.remove('in'); void tourEl.offsetWidth; tourEl.classList.add('in');
+    ringEl.classList.remove('in'); void ringEl.offsetWidth; ringEl.classList.add('in');
+    if (tourKbd) p.next.focus({ preventScroll: true });
+  }
+  function endTour(){
+    if (tourI < 0) return;
+    tourI = -1;
+    if (tourEl) { tourEl.remove(); ringEl.remove(); tourEl = ringEl = null; }
+    store('brc-tour', 'done');
+    if (tourKbd) $('tourBtn').focus();
+    tourKbd = false;
+  }
+  $('tourBtn').addEventListener('click', function(){ tourKbd = true; showTour(0); });
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && tourI >= 0 && lb.hidden) endTour(); });
+  var tourRaf = 0;
+  function reTour(){ if (tourI < 0 || tourRaf) return; tourRaf = requestAnimationFrame(function(){ tourRaf = 0; placeTour(); }); }
+  window.addEventListener('resize', reTour);
+  ['input', 'click', 'keyup'].forEach(function(ev){ document.addEventListener(ev, reTour, true); });
+  document.addEventListener('toggle', reTour, true);
+  if (load('brc-tour') !== 'done') setTimeout(function(){ if (tourI < 0 && document.visibilityState !== 'hidden') showTour(0); }, 1500);
+
   /* ---------- live data ----------
      On the website, data/*.json in this folder is refreshed by a daily price job and an
      hourly news-and-rates job; the page re-checks data/status.json every few minutes.

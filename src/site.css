@@ -437,3 +437,32 @@ a.mark:hover small { color: var(--trace); }
 .lost { display: flex; flex-direction: column; gap: 14px; align-items: flex-start; padding: 32px; }
 .lost h1 { font-size: clamp(2rem, 5vw, 3.2rem); }
 .lost p { color: var(--dim); max-width: 56ch; }
+
+/* guided tips */
+.tips-btn { all: unset; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; padding: 5px 11px; border: 1px solid var(--edge); background: var(--well); color: var(--dim); font-size: 0.8rem; flex: none; }
+.tips-btn:hover { color: var(--lock); border-color: var(--lock); }
+.tips-btn:focus-visible { outline: 2px solid var(--lock); outline-offset: 2px; }
+.tips-btn svg { width: 15px; height: 15px; }
+.tour-ring { position: absolute; z-index: 60; pointer-events: none; border: 2px solid var(--lock); box-shadow: 0 0 0 4px var(--lock-soft), 0 0 22px rgb(255 198 77 / 0.3); }
+.tour { position: absolute; z-index: 61; width: min(330px, calc(100vw - 32px)); background: var(--hull-solid); color: var(--ink); border: 1px solid var(--lock); padding: 14px 16px 12px; box-shadow: 0 18px 44px rgb(0 0 0 / 0.45); }
+.tour-arrow { position: absolute; width: 14px; height: 14px; background: var(--hull-solid); border: 1px solid var(--lock); transform: rotate(45deg); }
+.tour[data-side="above"] .tour-arrow { bottom: -8px; border-top: 0; border-left: 0; }
+.tour[data-side="below"] .tour-arrow { top: -8px; border-bottom: 0; border-right: 0; }
+.tour-step { font-size: 0.76rem; color: var(--lock); font-weight: 600; }
+.tour h3 { font-size: 1.25rem; line-height: 1.15; margin: 2px 0 4px; }
+.tour-b { font-size: 0.9rem; color: var(--dim); }
+.tour-btns { display: flex; gap: 8px; margin-top: 12px; align-items: center; }
+.tour-btns button { all: unset; cursor: pointer; font-size: 0.86rem; }
+.tour-btns .skip { margin-right: auto; color: var(--dim); text-decoration: underline; text-underline-offset: 3px; }
+.tour-btns .skip:hover { color: var(--ink); }
+.tour-btns .back, .tour-btns .next { padding: 6px 14px; font-weight: 600; border: 1px solid var(--edge-hi); }
+.tour-btns .back[hidden] { display: none; }
+.tour-btns .next { background: var(--lock); border-color: var(--lock); color: #1A1300; }
+:root[data-theme="light"] .tour-btns .next { color: #FFFFFF; }
+.tour-btns button:focus-visible { outline: 2px solid var(--trace); outline-offset: 2px; }
+@media (prefers-reduced-motion: no-preference) {
+  .tour.in { animation: tourIn 240ms ease-out; }
+  .tour-ring.in { animation: ringIn 360ms cubic-bezier(.2,.9,.3,1.2); }
+  @keyframes tourIn { from { opacity: 0; transform: translateY(6px); } }
+  @keyframes ringIn { from { opacity: 0; transform: scale(1.06); } }
+}
