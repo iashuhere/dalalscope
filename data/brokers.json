@@ -1,0 +1,862 @@
+{
+ "updatedAt": "2026-10-26T17:45:17Z",
+ "checkedAt": "2026-10-26T17:45:17Z",
+ "note": "Rule types: z=free, f=flat Rs a per order, l=lower of Rs a or p (fraction) of order value (mn=true adds Rs 5 minimum), p=p fraction of value, lot=Rs a per lot. Segments: del,intra,fut,opt,cfut,copt,mfut,mopt; null = not offered.",
+ "list": [
+  {
+   "id": "zerodha",
+   "name": "Zerodha",
+   "plan": "Standard",
+   "src": "off",
+   "amc": "₹300/yr (₹0 BSDA under ₹4L)",
+   "dp": 15.34,
+   "news": "Zerodha",
+   "r": {
+    "del": {
+     "t": "z"
+    },
+    "intra": {
+     "t": "l",
+     "a": 20,
+     "p": 0.0003,
+     "mn": false
+    },
+    "fut": {
+     "t": "l",
+     "a": 20,
+     "p": 0.0003,
+     "mn": false
+    },
+    "opt": {
+     "t": "f",
+     "a": 20
+    },
+    "cfut": {
+     "t": "l",
+     "a": 20,
+     "p": 0.0003,
+     "mn": false
+    },
+    "copt": {
+     "t": "f",
+     "a": 20
+    },
+    "mfut": {
+     "t": "l",
+     "a": 20,
+     "p": 0.0003,
+     "mn": false
+    },
+    "mopt": {
+     "t": "f",
+     "a": 20
+    }
+   },
+   "notes": [
+    "Accounts that break the 50% cash-margin rule pay ₹40, not ₹20, per intraday F&O order from 1 Apr 2026. A debit balance adds ₹20 per order.",
+    "Free delivery is for individuals only; HUFs, firms and companies pay 0.1% or ₹20.",
+    "Call & trade and auto square-off: ₹50 per order."
+   ],
+   "links": [
+    [
+     "zerodha.com/charges",
+     "https://zerodha.com/charges"
+    ]
+   ]
+  },
+  {
+   "id": "groww",
+   "name": "Groww",
+   "plan": "Standard",
+   "src": "off",
+   "amc": "₹0",
+   "dp": 23.6,
+   "news": "Groww",
+   "r": {
+    "del": {
+     "t": "l",
+     "a": 20,
+     "p": 0.001,
+     "mn": true
+    },
+    "intra": {
+     "t": "l",
+     "a": 20,
+     "p": 0.001,
+     "mn": true
+    },
+    "fut": {
+     "t": "f",
+     "a": 20
+    },
+    "opt": {
+     "t": "f",
+     "a": 20
+    },
+    "cfut": null,
+    "copt": null,
+    "mfut": {
+     "t": "f",
+     "a": 20
+    },
+    "mopt": {
+     "t": "f",
+     "a": 20
+    }
+   },
+   "notes": [
+    "Equity orders paid from UPI Mandate balance cost 1% of order value with no cap. Fund the account first.",
+    "Minimum brokerage ₹5 (or 2.5% if lower) on stock orders.",
+    "Auto square-off ₹50 per open intraday position. No currency derivatives."
+   ],
+   "links": [
+    [
+     "groww.in/pricing",
+     "https://groww.in/pricing"
+    ]
+   ]
+  },
+  {
+   "id": "angel",
+   "name": "Angel One",
+   "plan": "Standard",
+   "src": "off",
+   "amc": "₹240/yr",
+   "dp": 23.6,
+   "news": "Angel One",
+   "r": {
+    "del": {
+     "t": "l",
+     "a": 20,
+     "p": 0.001,
+     "mn": true
+    },
+    "intra": {
+     "t": "l",
+     "a": 20,
+     "p": 0.001,
+     "mn": true
+    },
+    "fut": {
+     "t": "f",
+     "a": 20
+    },
+    "opt": {
+     "t": "f",
+     "a": 20
+    },
+    "cfut": {
+     "t": "f",
+     "a": 20
+    },
+    "copt": {
+     "t": "f",
+     "a": 20
+    },
+    "mfut": {
+     "t": "f",
+     "a": 20
+    },
+    "mopt": {
+     "t": "f",
+     "a": 20
+    }
+   },
+   "notes": [
+    "Delivery is not free: ₹20 or 0.1%, with a ₹5 minimum.",
+    "₹0 brokerage up to ₹500 in the first 30 days after onboarding.",
+    "Call & trade ₹20 per order; auto square-off at normal brokerage."
+   ],
+   "links": [
+    [
+     "angelone.in pricing",
+     "https://www.angelone.in/exchange-transaction-charges"
+    ]
+   ]
+  },
+  {
+   "id": "upstox",
+   "name": "Upstox",
+   "plan": "Standard",
+   "src": "off",
+   "amc": "₹300/yr",
+   "dp": 23.6,
+   "news": "Upstox",
+   "r": {
+    "del": {
+     "t": "f",
+     "a": 20
+    },
+    "intra": {
+     "t": "l",
+     "a": 20,
+     "p": 0.001,
+     "mn": false
+    },
+    "fut": {
+     "t": "l",
+     "a": 20,
+     "p": 0.0005,
+     "mn": false
+    },
+    "opt": {
+     "t": "f",
+     "a": 20
+    },
+    "cfut": {
+     "t": "l",
+     "a": 20,
+     "p": 0.0005,
+     "mn": false
+    },
+    "copt": {
+     "t": "f",
+     "a": 20
+    },
+    "mfut": {
+     "t": "l",
+     "a": 20,
+     "p": 0.0005,
+     "mn": false
+    },
+    "mopt": {
+     "t": "f",
+     "a": 20
+    }
+   },
+   "notes": [
+    "Delivery costs a flat ₹20 per order, even on a small buy.",
+    "Stock F&O that ends in physical settlement: 0.25% brokerage on the settled value (0.1% if netted off).",
+    "Auto square-off and call & trade: ₹75 + GST per order."
+   ],
+   "links": [
+    [
+     "upstox.com/brokerage-charges",
+     "https://upstox.com/brokerage-charges/"
+    ]
+   ]
+  },
+  {
+   "id": "dhan",
+   "name": "Dhan",
+   "plan": "Standard",
+   "src": "off",
+   "amc": "₹0",
+   "dp": 14.75,
+   "news": "Dhan",
+   "r": {
+    "del": {
+     "t": "z"
+    },
+    "intra": {
+     "t": "l",
+     "a": 20,
+     "p": 0.0003,
+     "mn": false
+    },
+    "fut": {
+     "t": "f",
+     "a": 20
+    },
+    "opt": {
+     "t": "f",
+     "a": 20
+    },
+    "cfut": {
+     "t": "l",
+     "a": 20,
+     "p": 0.0003,
+     "mn": false
+    },
+    "copt": {
+     "t": "f",
+     "a": 20
+    },
+    "mfut": {
+     "t": "f",
+     "a": 20
+    },
+    "mopt": {
+     "t": "f",
+     "a": 20
+    }
+   },
+   "notes": [
+    "F&O that goes to physical delivery costs 0.10% of contract value.",
+    "Free delivery, ETFs and IPOs; zero AMC for individuals.",
+    "Auto square-off ₹20 + GST; call & trade ₹50 + GST."
+   ],
+   "links": [
+    [
+     "dhan.co/pricing",
+     "https://dhan.co/pricing/"
+    ]
+   ]
+  },
+  {
+   "id": "fyers",
+   "name": "FYERS",
+   "plan": "Standard",
+   "src": "off",
+   "amc": "₹0",
+   "dp": 14.75,
+   "news": "FYERS",
+   "r": {
+    "del": {
+     "t": "l",
+     "a": 20,
+     "p": 0.003,
+     "mn": false
+    },
+    "intra": {
+     "t": "l",
+     "a": 20,
+     "p": 0.0003,
+     "mn": false
+    },
+    "fut": {
+     "t": "l",
+     "a": 20,
+     "p": 0.0003,
+     "mn": false
+    },
+    "opt": {
+     "t": "f",
+     "a": 20
+    },
+    "cfut": {
+     "t": "l",
+     "a": 20,
+     "p": 0.0003,
+     "mn": false
+    },
+    "copt": {
+     "t": "f",
+     "a": 20
+    },
+    "mfut": {
+     "t": "l",
+     "a": 20,
+     "p": 0.0003,
+     "mn": false
+    },
+    "mopt": {
+     "t": "f",
+     "a": 20
+    }
+   },
+   "notes": [
+    "Delivery moved from free to ₹20 or 0.3% on 1 Oct 2024. Some comparison sites still list it as free.",
+    "Adds clearing charges of 0.0005% on futures and 0.009% on options (not included here).",
+    "Call & trade and admin square-off: ₹50 + GST per order."
+   ],
+   "links": [
+    [
+     "fyers.in/charges-list",
+     "https://fyers.in/charges-list.md"
+    ]
+   ]
+  },
+  {
+   "id": "5paisa",
+   "name": "5paisa",
+   "plan": "Standard",
+   "src": "off",
+   "amc": "Slab-based",
+   "dp": 23.6,
+   "news": "5paisa",
+   "r": {
+    "del": {
+     "t": "f",
+     "a": 20
+    },
+    "intra": {
+     "t": "l",
+     "a": 20,
+     "p": 0.025,
+     "mn": false
+    },
+    "fut": {
+     "t": "l",
+     "a": 20,
+     "p": 0.025,
+     "mn": false
+    },
+    "opt": {
+     "t": "f",
+     "a": 20
+    },
+    "cfut": {
+     "t": "l",
+     "a": 20,
+     "p": 0.025,
+     "mn": false
+    },
+    "copt": {
+     "t": "f",
+     "a": 20
+    },
+    "mfut": {
+     "t": "l",
+     "a": 20,
+     "p": 0.025,
+     "mn": false
+    },
+    "mopt": {
+     "t": "f",
+     "a": 20
+    }
+   },
+   "notes": [
+    "Flat ₹20 on every segment, including delivery.",
+    "Demat AMC free in year one, then depends on holding value and months traded.",
+    "Auto square-off and call & trade: ₹20 extra per order."
+   ],
+   "links": [
+    [
+     "5paisa FAQ",
+     "https://forum.5paisa.com/portal/en/kb/articles/what-are-the-brokerage-charges-for-resident-individual-demat-accounts-at-5paisa"
+    ]
+   ]
+  },
+  {
+   "id": "kotak",
+   "name": "Kotak Neo",
+   "plan": "Trade Free (30+)",
+   "src": "off",
+   "amc": "not on plan page",
+   "dp": null,
+   "news": "Kotak Neo",
+   "r": {
+    "del": {
+     "t": "p",
+     "p": 0.002
+    },
+    "intra": {
+     "t": "l",
+     "a": 10,
+     "p": 0.0005,
+     "mn": false
+    },
+    "fut": {
+     "t": "f",
+     "a": 10
+    },
+    "opt": {
+     "t": "f",
+     "a": 10
+    },
+    "cfut": {
+     "t": "f",
+     "a": 10
+    },
+    "copt": {
+     "t": "f",
+     "a": 10
+    },
+    "mfut": {
+     "t": "f",
+     "a": 10
+    },
+    "mopt": {
+     "t": "f",
+     "a": 10
+    }
+   },
+   "notes": [
+    "₹10 on intraday and F&O, but delivery is 0.20% with no cap: ₹200 on a ₹1 lakh buy.",
+    "Existing clients pay ₹499 + GST to switch to this plan. Under 30? Trade Free Youth has ₹0 delivery.",
+    "DP charges are on a separate demat schedule, so they are not included here."
+   ],
+   "links": [
+    [
+     "kotakneo.com Trade Free",
+     "https://www.kotakneo.com/pricing/trade-free-plan/"
+    ]
+   ]
+  },
+  {
+   "id": "hdfcsky",
+   "name": "HDFC Sky",
+   "plan": "Standard",
+   "src": "off",
+   "amc": "free year one",
+   "dp": 23.6,
+   "news": "HDFC Sky",
+   "r": {
+    "del": {
+     "t": "l",
+     "a": 20,
+     "p": 0.025,
+     "mn": false
+    },
+    "intra": {
+     "t": "l",
+     "a": 20,
+     "p": 0.025,
+     "mn": false
+    },
+    "fut": {
+     "t": "l",
+     "a": 20,
+     "p": 0.025,
+     "mn": false
+    },
+    "opt": {
+     "t": "f",
+     "a": 20
+    },
+    "cfut": {
+     "t": "l",
+     "a": 20,
+     "p": 0.025,
+     "mn": false
+    },
+    "copt": {
+     "t": "f",
+     "a": 20
+    },
+    "mfut": {
+     "t": "l",
+     "a": 20,
+     "p": 0.025,
+     "mn": false
+    },
+    "mopt": {
+     "t": "f",
+     "a": 20
+    }
+   },
+   "notes": [
+    "₹20 per order on everything, delivery and ETFs included.",
+    "RMS square-off adds a further ₹20 per order.",
+    "Pledge ₹20 per scrip."
+   ],
+   "links": [
+    [
+     "hdfcsky.com/pricing",
+     "https://hdfcsky.com/pricing"
+    ]
+   ]
+  },
+  {
+   "id": "icici-ms",
+   "name": "ICICI Direct",
+   "plan": "MoneySaver (default)",
+   "src": "off",
+   "amc": "₹700/yr",
+   "dp": 23.6,
+   "news": "ICICI Direct",
+   "r": {
+    "del": {
+     "t": "p",
+     "p": 0.0029
+    },
+    "intra": {
+     "t": "p",
+     "p": 0.00029
+    },
+    "fut": {
+     "t": "p",
+     "p": 0.00029
+    },
+    "opt": {
+     "t": "lot",
+     "a": 49
+    },
+    "cfut": {
+     "t": "f",
+     "a": 20
+    },
+    "copt": {
+     "t": "f",
+     "a": 20
+    },
+    "mfut": {
+     "t": "f",
+     "a": 20
+    },
+    "mopt": {
+     "t": "f",
+     "a": 20
+    }
+   },
+   "notes": [
+    "If you buy no plan you pay 0.29% on delivery, 0.029% on intraday and futures, and ₹49 per options lot.",
+    "One-time Prime plans bring delivery down to 0.25%–0.07%.",
+    "Call & trade ₹50 per order."
+   ],
+   "links": [
+    [
+     "icicidirect.com/brokerage",
+     "https://icicidirect.com/brokerage"
+    ]
+   ]
+  },
+  {
+   "id": "icici-iv",
+   "name": "ICICI Direct",
+   "plan": "iValue add-on",
+   "src": "off",
+   "amc": "₹300/yr",
+   "dp": 23.6,
+   "news": "ICICI Direct",
+   "r": {
+    "del": {
+     "t": "p",
+     "p": 0.0029
+    },
+    "intra": {
+     "t": "f",
+     "a": 20
+    },
+    "fut": {
+     "t": "f",
+     "a": 20
+    },
+    "opt": {
+     "t": "f",
+     "a": 20
+    },
+    "cfut": {
+     "t": "f",
+     "a": 20
+    },
+    "copt": {
+     "t": "f",
+     "a": 20
+    },
+    "mfut": {
+     "t": "f",
+     "a": 20
+    },
+    "mopt": {
+     "t": "f",
+     "a": 20
+    }
+   },
+   "notes": [
+    "iValue does not change delivery: it stays at 0.29% unless you also buy a Prime plan.",
+    "One-time add-on: flat ₹20 on intraday, futures, options and commodity.",
+    "Demat AMC drops from ₹700 to ₹300."
+   ],
+   "links": [
+    [
+     "icicidirect.com/brokerage",
+     "https://icicidirect.com/brokerage"
+    ]
+   ]
+  },
+  {
+   "id": "motilal",
+   "name": "Motilal Oswal",
+   "plan": "Default",
+   "src": "off",
+   "amc": "₹199/yr",
+   "dp": 35.4,
+   "news": "Motilal Oswal",
+   "r": {
+    "del": {
+     "t": "p",
+     "p": 0.002
+    },
+    "intra": {
+     "t": "p",
+     "p": 0.0002
+    },
+    "fut": {
+     "t": "p",
+     "p": 0.0002
+    },
+    "opt": {
+     "t": "lot",
+     "a": 20
+    },
+    "cfut": {
+     "t": "lot",
+     "a": 20
+    },
+    "copt": {
+     "t": "lot",
+     "a": 20
+    },
+    "mfut": {
+     "t": "p",
+     "p": 0.0002
+    },
+    "mopt": {
+     "t": "lot",
+     "a": 200
+    }
+   },
+   "notes": [
+    "Options are ₹20 per lot, not per order: five lots in one order cost ₹100.",
+    "0.20% delivery, 0.02% intraday and futures.",
+    "DP is 0.025% or ₹30 per debit; ₹30 + GST is used here."
+   ],
+   "links": [
+    [
+     "Motilal on charges",
+     "https://motilaloswal.com/learning-centre/2023/6/what-are-the-charges-levied-on-stock-trading-at-motilal-oswal"
+    ]
+   ]
+  },
+  {
+   "id": "mstock",
+   "name": "m.Stock",
+   "plan": "Standard",
+   "src": "off",
+   "amc": "₹0",
+   "dp": 21.24,
+   "news": "m.Stock",
+   "r": {
+    "del": {
+     "t": "f",
+     "a": 10
+    },
+    "intra": {
+     "t": "f",
+     "a": 10
+    },
+    "fut": {
+     "t": "f",
+     "a": 10
+    },
+    "opt": {
+     "t": "f",
+     "a": 10
+    },
+    "cfut": {
+     "t": "f",
+     "a": 10
+    },
+    "copt": {
+     "t": "f",
+     "a": 10
+    },
+    "mfut": null,
+    "mopt": null
+   },
+   "notes": [
+    "The pricing page now lists ₹10 per order on delivery too. The old ₹0 delivery offer is gone.",
+    "Zero AMC, platform and call & trade charges.",
+    "RMS square-off ₹100 + GST per order. Commodity rates not published."
+   ],
+   "links": [
+    [
+     "mstock.com/pricing",
+     "https://www.mstock.com/pricing"
+    ]
+   ]
+  },
+  {
+   "id": "shoonya",
+   "name": "Shoonya",
+   "plan": "by Finvasia",
+   "src": "agg",
+   "amc": "₹499/yr",
+   "dp": 10.62,
+   "news": "Shoonya",
+   "r": {
+    "del": {
+     "t": "z"
+    },
+    "intra": {
+     "t": "l",
+     "a": 5,
+     "p": 0.0003,
+     "mn": false
+    },
+    "fut": {
+     "t": "l",
+     "a": 5,
+     "p": 0.0003,
+     "mn": false
+    },
+    "opt": {
+     "t": "f",
+     "a": 5
+    },
+    "cfut": {
+     "t": "l",
+     "a": 5,
+     "p": 0.0003,
+     "mn": false
+    },
+    "copt": {
+     "t": "f",
+     "a": 5
+    },
+    "mfut": {
+     "t": "l",
+     "a": 5,
+     "p": 0.0003,
+     "mn": false
+    },
+    "mopt": {
+     "t": "f",
+     "a": 5
+    }
+   },
+   "notes": [
+    "Zero brokerage ended in December 2024. Intraday, F&O and commodity now cost ₹5 per order; delivery is still free.",
+    "AMC ₹499 + GST a year on active accounts. API trading ₹1,999 + GST a month.",
+    "Rates are from comparison sites, not Shoonya’s own page. Confirm before opening an account."
+   ],
+   "links": [
+    [
+     "TradingQnA notice",
+     "https://tradingqna.com/t/shoonya-no-more-free/175985"
+    ]
+   ]
+  },
+  {
+   "id": "paytm",
+   "name": "Paytm Money",
+   "plan": "Standard",
+   "src": "agg",
+   "amc": "₹0",
+   "dp": 23.6,
+   "news": "Paytm Money",
+   "r": {
+    "del": {
+     "t": "l",
+     "a": 20,
+     "p": 0.025,
+     "mn": false
+    },
+    "intra": {
+     "t": "l",
+     "a": 20,
+     "p": 0.0005,
+     "mn": false
+    },
+    "fut": {
+     "t": "l",
+     "a": 20,
+     "p": 0.0002,
+     "mn": false
+    },
+    "opt": {
+     "t": "f",
+     "a": 20
+    },
+    "cfut": null,
+    "copt": null,
+    "mfut": null,
+    "mopt": null
+   },
+   "notes": [
+    "Delivery is charged: ₹20 or 2.5%, whichever is lower.",
+    "Accounts opened before Aug 2023 may still be on older ₹10–₹15 pricing.",
+    "No currency or commodity trading. Rates are from comparison sites."
+   ],
+   "links": [
+    [
+     "CompareShareBrokers",
+     "https://comparesharebrokers.com/review/paytm-money"
+    ]
+   ]
+  }
+ ]
+}

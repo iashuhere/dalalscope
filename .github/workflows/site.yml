@@ -1,0 +1,60 @@
+name: Refresh prices and publish DalalScope
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    # every two hours; NSE posts the day's closing prices in the evening (IST)
+    - cron: '17 */2 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: site
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Refresh NSE closing prices
+        if: github.event_name != 'push'
+        run: python scripts/build_prices.py
+      - name: Commit new prices
+        if: github.event_name != 'push'
+        run: |
+          git config user.name "rate-card-bot"
+          git config user.email "rate-card-bot@users.noreply.github.com"
+          git add data/prices.json data/prices-meta.json
+          if git diff --cached --quiet; then echo "No price change"; exit 0; fi
+          git commit -m "prices: NSE close $(python -c "import json;print(json.load(open('data/prices-meta.json'))['date'])")"
+          for i in 1 2 3; do git pull --rebase -q && git push -q && break; sleep 5; done
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - id: pages
+        uses: actions/configure-pages@v5
+      - name: Build pages from the latest data
+        run: node scripts/build_site.js
+        env:
+          SITE_URL: ${{ steps.pages.outputs.base_url }}
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
