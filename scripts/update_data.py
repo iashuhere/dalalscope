@@ -3,6 +3,7 @@
   python3 scripts/update_data.py news NEW_ITEMS.json   add headlines (validated, de-duplicated, newest 40 kept)
   python3 scripts/update_data.py brokers BROKERS.json  replace the broker list after a rate change (validated)
   python3 scripts/update_data.py checked news|rates     record that a check ran, even if nothing changed
+  python3 scripts/update_data.py validate               check all data files (run before data reaches main)
 
 Every command prints what it changed and exits non-zero on bad input, leaving the files untouched.
 """
@@ -189,6 +190,44 @@ def cmd_brokers(path):
         print('  ', c)
 
 
+def cmd_validate(_):
+    """Check every data file the hourly job may change; used before data from a claude/ branch reaches main."""
+    news = load('news.json', {'items': []}).get('items', [])
+    if not isinstance(news, list) or len(news) > KEEP:
+        die('news.json must hold at most %d items' % KEEP)
+    ids = set()
+    for n in news:
+        check_item(n)
+        if n['id'] in ids:
+            die('duplicate news id %s' % n['id'])
+        ids.add(n['id'])
+    lst = load('brokers.json', {}).get('list', [])
+    if not (isinstance(lst, list) and 5 <= len(lst) <= 40):
+        die('brokers.json must list 5-40 plans')
+    for b in lst:
+        for k in ('id', 'name', 'plan', 'src', 'amc', 'r', 'notes', 'links'):
+            if k not in b:
+                die('%s is missing %s' % (b.get('id'), k))
+        for s in SEGS:
+            if not valid_rule(b['r'].get(s)):
+                die('%s %s has an invalid rule' % (b['id'], s))
+        if not all(s in SEGS and b['r'].get(s) is None for s in b.get('unl', [])):
+            die('%s unl lists a segment that has a rule' % b['id'])
+        if not (b.get('dp') is None or (isinstance(b['dp'], (int, float)) and 0 <= b['dp'] <= 100)):
+            die('%s dp out of range' % b['id'])
+        for l in b['links']:
+            if not (isinstance(l, list) and len(l) == 2 and re.fullmatch(r'https://[^\s"\'<>]+', l[1])):
+                die('%s has a bad link' % b['id'])
+    st = load('status.json', {})
+    for k, v in st.items():
+        if not re.fullmatch(r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?Z', str(v)):
+            die('status.json %s is not a UTC timestamp' % k)
+    log = load('changes.json', {'items': []}).get('items', [])
+    if not all(isinstance(i.get('changes'), list) and all(isinstance(c, str) and len(c) < 400 for c in i['changes']) for i in log):
+        die('changes.json is malformed')
+    print('valid: %d headlines, %d plans, %d change-log entries' % (len(news), len(lst), len(log)))
+
+
 def cmd_checked(what):
     if what not in ('news', 'rates'):
         die('checked takes news or rates')
@@ -204,6 +243,9 @@ def cmd_checked(what):
 
 
 if __name__ == '__main__':
+    if len(sys.argv) == 2 and sys.argv[1] == 'validate':
+        cmd_validate(None)
+        sys.exit(0)
     if len(sys.argv) != 3 or sys.argv[1] not in ('news', 'brokers', 'checked'):
         print(__doc__)
         sys.exit(2)

@@ -7,6 +7,11 @@ on:
     # every two hours; NSE posts the day's closing prices in the evening (IST)
     - cron: '17 */2 * * *'
   workflow_dispatch:
+    inputs:
+      changed:
+        description: Data files changed by the hourly news run (for IndexNow)
+        required: false
+        default: ''
 
 permissions:
   contents: write
@@ -83,7 +88,7 @@ jobs:
             if [ "${{ github.event.before }}" = "0000000000000000000000000000000000000000" ]; then CHANGED=ALL
             else CHANGED=$(gh api "repos/${{ github.repository }}/compare/${{ github.event.before }}...${{ github.sha }}" --jq '.files[].filename' | tr '\n' ' '); fi
           else
-            CHANGED="${{ needs.build.outputs.changed }}"
+            CHANGED="${{ inputs.changed }} ${{ needs.build.outputs.changed }}"
           fi
           export CHANGED
           node scripts/build_site.js > /dev/null
