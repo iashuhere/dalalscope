@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-10-28T14:14:57Z",
+ "updatedAt": "2026-10-28T14:16:36Z",
  "items": [
   {
    "id": "2026-10-25-sebi-weighs-terminal-safeguards-and",
@@ -13,15 +13,15 @@
    "addedAt": "2026-10-26T12:00:00Z"
   },
   {
-   "id": "2026-10-23-sebi-margin-waiver-early-pay-in",
+   "id": "2026-10-23-sebi-margin-waiver-early-pay",
    "d": "2026-10-23",
    "who": "SEBI",
    "tag": "Rule change",
-   "title": "SEBI waives margin on later cash trades after early pay-in of shares",
-   "body": "A SEBI circular dated 22 October lets clearing corporations skip margin on a client's later cash-segment trades, up to the value of shares sold and accepted for early pay-in. Sale proceeds can be reused the same day; buying back the sold stock reverses the benefit.",
+   "title": "SEBI waives margin on repeat cash trades after early pay-in",
+   "body": "A SEBI circular dated 22 October says clearing corporations will not collect margin on a client's later cash-segment trades, up to the early pay-in value accepted (lower of EPI done or shares sold). Clients can reuse sale proceeds the same day; reversing the sale removes the benefit.",
    "srcName": "Outlook Money",
    "srcUrl": "https://www.outlookmoney.com/invest/sebi-introduces-real-time-margin-waiver-for-cash-segment-trades",
-   "addedAt": "2026-10-28T14:14:57Z"
+   "addedAt": "2026-10-28T14:16:36Z"
   },
   {
    "id": "2026-10-23-groww-opens-stock-trading-all",
