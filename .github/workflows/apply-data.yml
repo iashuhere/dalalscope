@@ -1,10 +1,11 @@
 name: Apply news and rates from the hourly Claude run
 
-# The hourly Claude run pushes its updated data files to the claude/data branch.
-# This job checks them and copies only those four files into main, then publishes.
+# The hourly Claude run pushes its updated data files to a new claude/data-<time> branch
+# (or the older fixed claude/data branch). This job checks them, copies only those four
+# files into main, publishes, then deletes the run's branch so the next run starts clean.
 on:
   push:
-    branches: ['claude/data']
+    branches: ['claude/data', 'claude/data-*']
 
 permissions:
   contents: write
@@ -16,7 +17,10 @@ concurrency:
 
 jobs:
   apply:
+    if: github.event.deleted != true
     runs-on: ubuntu-latest
+    env:
+      BRANCH: ${{ github.ref_name }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -24,10 +28,10 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Copy the data files from claude/data and check them
+      - name: Copy the data files from the run's branch and check them
         id: copy
         run: |
-          git fetch -q origin claude/data
+          git fetch -q origin "$BRANCH"
           git checkout FETCH_HEAD -- data/news.json data/brokers.json data/status.json data/changes.json
           python3 scripts/update_data.py validate
           git config user.name "iashuhere"
@@ -42,3 +46,6 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh workflow run site.yml --ref main -f changed="${{ steps.copy.outputs.changed }}"
+      - name: Delete the run's branch
+        if: success() && startsWith(github.ref_name, 'claude/data-')
+        run: git push -q origin --delete "$BRANCH" || true
