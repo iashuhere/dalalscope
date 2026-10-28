@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-10-26T17:45:17Z",
+ "updatedAt": "2026-10-28T14:14:57Z",
  "items": [
   {
    "id": "2026-10-25-sebi-weighs-terminal-safeguards-and",
@@ -11,6 +11,17 @@
    "srcName": "Kotak Neo News",
    "srcUrl": "https://www.kotakneo.com/news/regulations/sebi-trading-terminal-safeguards-broker-compliance-ai-rules/",
    "addedAt": "2026-10-26T12:00:00Z"
+  },
+  {
+   "id": "2026-10-23-sebi-margin-waiver-early-pay-in",
+   "d": "2026-10-23",
+   "who": "SEBI",
+   "tag": "Rule change",
+   "title": "SEBI waives margin on later cash trades after early pay-in of shares",
+   "body": "A SEBI circular dated 22 October lets clearing corporations skip margin on a client's later cash-segment trades, up to the value of shares sold and accepted for early pay-in. Sale proceeds can be reused the same day; buying back the sold stock reverses the benefit.",
+   "srcName": "Outlook Money",
+   "srcUrl": "https://www.outlookmoney.com/invest/sebi-introduces-real-time-margin-waiver-for-cash-segment-trades",
+   "addedAt": "2026-10-28T14:14:57Z"
   },
   {
    "id": "2026-10-23-groww-opens-stock-trading-all",
