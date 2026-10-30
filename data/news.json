@@ -1,6 +1,17 @@
 {
- "updatedAt": "2026-10-28T14:16:36Z",
+ "updatedAt": "2026-10-30T07:12:01Z",
  "items": [
+  {
+   "id": "2026-10-30-hdfc-sky-direct-bank-linked-funding",
+   "d": "2026-10-30",
+   "who": "HDFC Sky",
+   "tag": "New product",
+   "title": "HDFC Sky launches SKY Direct bank-linked funding for HDFC Bank customers",
+   "body": "SKY Direct holds funds in the customer's HDFC Bank savings account as trading limits; only the amount used for executed trades moves to the broker at day end. It covers cash, F&O, MTF and stock SIPs, and enables DDPI automatically for those without it.",
+   "srcName": "The Tribune",
+   "srcUrl": "https://tribuneindia.com/news/business/hdfc-securities-launches-sky-direct-enabling-instant-trading-with-smart-bank-linked-funding",
+   "addedAt": "2026-10-30T07:12:01Z"
+  },
   {
    "id": "2026-10-25-sebi-weighs-terminal-safeguards-and",
    "d": "2026-10-25",
