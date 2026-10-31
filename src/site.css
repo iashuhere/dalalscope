@@ -483,3 +483,55 @@ a.mark:hover small { color: var(--trace); }
 .changes ul { padding-left: 18px; }
 @media (max-width: 560px) { .changes > li { grid-template-columns: minmax(0, 1fr); gap: 2px; } }
 .foot-site { margin: 4px 0 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 4px 18px; }
+
+/* guides: cheapest broker by segment, comparisons, mini calculator */
+.sub { color: var(--dim); font-size: 0.9rem; max-width: 80ch; }
+.bp section > .sub { margin-top: 4px; }
+.h-gap { margin-top: 18px; }
+.prose-s p { max-width: 80ch; margin-top: 8px; }
+.ex-t.gt { min-width: 560px; }
+.ex-t.gt td, .ex-t.gt thead th { text-align: left; white-space: normal; }
+.ex-t.gt td.num, .ex-t.gt thead th.num { text-align: right; white-space: nowrap; }
+.ex-t.gt td.rk { color: var(--dim); font-family: var(--f-hud); font-weight: 600; width: 2.5em; }
+.ex-t.gt td small { display: block; font-size: 0.74rem; color: var(--dim); }
+.ex-t.gt thead th small { display: inline; font-family: var(--f-body); font-weight: 400; font-size: 0.74rem; }
+.ex-t.gt thead th a { color: var(--ink); }
+.ex-t tr.win th, .ex-t tr.win td { background: var(--lock-soft); }
+.ex-t tr.win td b { color: var(--lock); }
+.verdict { border-left: 3px solid var(--lock); background: var(--lock-soft); padding: 12px 14px; }
+.insights { margin: 10px 0 0; padding-left: 18px; display: flex; flex-direction: column; gap: 8px; max-width: 86ch; }
+.bp section h3 { margin-top: 18px; font-size: 1.15rem; color: var(--trace); }
+.guides { display: flex; flex-direction: column; gap: 16px; }
+.g-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; }
+@media (max-width: 1080px) { .g-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 680px) { .g-grid { grid-template-columns: minmax(0, 1fr); } }
+.g-grid li { display: flex; }
+.g-tile { display: flex; flex-direction: column; gap: 6px; width: 100%; text-decoration: none; color: var(--ink); }
+.g-tile:hover { border-color: var(--trace); box-shadow: var(--glow); }
+.g-k { font-family: var(--f-hud); font-weight: 600; color: var(--trace); font-size: 0.95rem; }
+.g-tile b { font-family: var(--f-hud); font-size: 1.3rem; line-height: 1.15; color: var(--lock); }
+.g-v { font-size: 0.84rem; color: var(--dim); margin-top: auto; }
+.mc { display: flex; flex-direction: column; gap: 10px; }
+.mc-f { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; align-items: end; margin-top: 4px; }
+@media (max-width: 760px) { .mc-f { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.mc-f label { display: flex; flex-direction: column; gap: 5px; font-family: var(--f-hud); font-weight: 600; font-size: 0.92rem; color: var(--dim); min-width: 0; }
+.mc-f label[hidden] { display: none; }
+.mc-f input, .mc-f select { font-family: var(--f-body); font-weight: 400; font-size: 0.98rem; color: var(--ink); background: var(--well); border: 1px solid var(--edge-hi); border-radius: 0; padding: 8px 10px; width: 100%; min-width: 0; }
+.mc-f input:focus, .mc-f select:focus { outline: none; border-color: var(--trace); box-shadow: inset 0 0 0 1px var(--trace); }
+.mc-t { min-width: 0; }
+.mc-t td, .mc-t thead th:not(:first-child) { text-align: right; white-space: nowrap; }
+.mc-t thead th small { display: block; }
+.mc-note { font-size: 0.98rem; }
+.mc-note b { color: var(--lock); font-family: var(--f-hud); font-size: 1.1rem; }
+.two-col { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 10px; }
+@media (max-width: 720px) { .two-col { grid-template-columns: minmax(0, 1fr); } }
+.two-col h3 { margin: 0 0 6px !important; }
+.mc-f input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
+.mc-f input::-webkit-outer-spin-button, .mc-f input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+@media (max-width: 640px) {
+  .ex-t.gt { min-width: 0; }
+  .rk-t th:nth-child(3), .rk-t td:nth-child(3), .rk-t th:nth-child(4), .rk-t td:nth-child(4), .rk-t th:nth-child(6), .rk-t td:nth-child(6) { display: none; }
+  .ex-t.gt th, .ex-t.gt td { padding: 8px 7px; }
+}
+.mc .table-scroll.one { max-width: 620px; }
+.plan .ex-t thead th:nth-child(2), .plan .ex-t thead th:nth-child(5) { text-align: left; }
