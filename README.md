@@ -24,7 +24,7 @@
 
 Every push to `main` rebuilds and redeploys. Open pages re-check `data/` every three minutes, so visitors see updates without reloading.
 
-Live site: https://iashuhere.github.io/dalalscope/
+Live site: https://dalalscope.com/
 
 Prices are end-of-day closes from NSE's bhavcopy (fallback: [veer0608/bhavcopy-pipeline](https://github.com/veer0608/bhavcopy-pipeline)). Broker rates come from each broker's published charges page. DalalScope compares published prices; it is not investment advice.
 
