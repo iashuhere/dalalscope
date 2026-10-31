@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-10-30T07:12:01Z",
+ "updatedAt": "2026-10-31T02:46:07Z",
  "items": [
   {
    "id": "2026-10-30-hdfc-sky-direct-bank-linked-funding",
@@ -88,6 +88,17 @@
    "srcName": "Upstox announcements",
    "srcUrl": "https://upstox.com/announcements/",
    "addedAt": "2026-10-26T12:00:00Z"
+  },
+  {
+   "id": "2026-10-16-angel-one-q2-profit-up-58",
+   "d": "2026-10-16",
+   "who": "Angel One",
+   "tag": "Growth",
+   "title": "Angel One Q2 profit rises 58% to ₹335 crore as users reach 4 crore",
+   "body": "Consolidated profit for July-September was ₹335 crore on gross revenue of ₹1,431.5 crore (up 18.9%). Operating margin was 45.1%, the user base hit 4 crore, and its share of retail equity turnover was 19.7%.",
+   "srcName": "Free Press Journal",
+   "srcUrl": "https://www.freepressjournal.in/business/angel-one-net-profit-jumps-582-to-335-crore-in-q2-fy27-total-users-reach-4-crore",
+   "addedAt": "2026-10-31T02:46:07Z"
   },
   {
    "id": "2026-10-14-industry-angel-one-closes-zerodha",
