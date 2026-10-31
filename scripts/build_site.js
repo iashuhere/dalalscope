@@ -21,6 +21,8 @@ const args = process.argv.slice(2);
 const PREVIEW = args[0] === '--preview' ? path.resolve(args[1] || 'preview.html') : null;
 let SITE_URL = process.env.SITE_URL || 'http://127.0.0.1:8765/';
 if (!SITE_URL.endsWith('/')) SITE_URL += '/';
+// Pages reports http:// for a custom domain until HTTPS is enforced; links should always be https.
+if (!/^http:\/\/(127\.0\.0\.1|localhost)/.test(SITE_URL)) SITE_URL = SITE_URL.replace(/^http:\/\//, 'https://');
 const BRAND = 'DalalScope';
 
 const read = (p) => fs.readFileSync(p, 'utf8');
