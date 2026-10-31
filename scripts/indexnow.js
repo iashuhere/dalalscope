@@ -18,6 +18,7 @@ const cfg = JSON.parse(fs.readFileSync(path.join(ROOT, 'site.config.json'), 'utf
 let site = process.env.SITE_URL || '';
 if (!site || !cfg.indexNowKey) { console.log('IndexNow: no SITE_URL or key; skipping'); process.exit(0); }
 if (!site.endsWith('/')) site += '/';
+site = site.replace(/^http:\/\//, 'https://'); // Pages reports http:// until HTTPS is enforced
 const changed = (process.env.CHANGED || '').split(/\s+/).filter(Boolean);
 const all = fs.readFileSync(path.join(ROOT, '_site', 'urls.txt'), 'utf8').split('\n').filter(Boolean);
 
