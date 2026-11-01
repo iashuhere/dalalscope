@@ -51,10 +51,14 @@ const meta = readJSON(path.join(DATA, 'prices-meta.json'), {});
 const CONFIG = readJSON(path.join(ROOT, 'site.config.json'), {});
 const changeLog = readJSON(path.join(DATA, 'changes.json'), { items: [] });
 const REPO_URL = CONFIG.repo ? 'https://github.com/' + CONFIG.repo : '';
-const REPORT_URL = REPO_URL ? REPO_URL + '/issues/new?title=' + encodeURIComponent('Wrong rate: ') : '';
+/* wrong-rate reports go to the contact email when one is set (no account needed), otherwise to a GitHub issue */
+const REPORT_BODY = 'Broker and plan:\nWhich charge looks wrong:\nCorrect rate:\nLink to the broker’s page that shows it:\n';
+const REPORT_URL = CONFIG.contactEmail ? 'mailto:' + CONFIG.contactEmail + '?subject=' + encodeURIComponent('Wrong rate on DalalScope') + '&body=' + encodeURIComponent(REPORT_BODY)
+  : REPO_URL ? REPO_URL + '/issues/new?title=' + encodeURIComponent('Wrong rate: ') : '';
+const REPORT_ATTRS = REPORT_URL.startsWith('mailto:') ? '' : ' target="_blank" rel="noopener"';
 function siteLinks(root) {
   return [`<li><a href="${root}cheapest-broker/">Cheapest broker by segment</a></li>`, `<li><a href="${root}compare/">Compare brokers</a></li>`, `<li><a href="${root}about/">About DalalScope</a></li>`, `<li><a href="${root}how-we-calculate/">How we calculate</a></li>`]
-    .concat(REPORT_URL ? [`<li><a href="${REPORT_URL}" target="_blank" rel="noopener">Report a wrong rate</a></li>`] : [])
+    .concat(REPORT_URL ? [`<li><a href="${esc(REPORT_URL)}"${REPORT_ATTRS}>Report a wrong rate</a></li>`] : [])
     .concat(CONFIG.contactEmail ? [`<li><a href="mailto:${esc(CONFIG.contactEmail)}">Contact</a></li>`] : []).join('');
 }
 const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -368,7 +372,7 @@ function aboutPage() {
   const root = '../';
   const url = SITE_URL + 'about/';
   const who = CONFIG.owner ? `DalalScope is built and maintained by ${esc(CONFIG.owner)}${CONFIG.ownerNote ? ', ' + esc(CONFIG.ownerNote) : ''}.` : 'DalalScope is an independent project run from Bengaluru.';
-  const contact = [REPORT_URL ? `<a href="${REPORT_URL}" target="_blank" rel="noopener">report it on GitHub</a>` : '', CONFIG.contactEmail ? `email <a href="mailto:${esc(CONFIG.contactEmail)}">${esc(CONFIG.contactEmail)}</a>` : ''].filter(Boolean).join(' or ');
+  const contact = CONFIG.contactEmail ? `email <a href="${esc(REPORT_URL)}">${esc(CONFIG.contactEmail)}</a> with the broker, the charge and a link to the broker’s page` : REPORT_URL ? `<a href="${REPORT_URL}" target="_blank" rel="noopener">report it on GitHub</a>` : '';
   const body = `    <header class="bp-head">
       <h1>About DalalScope</h1>
       <p class="lead">DalalScope answers one question for Indian traders: what will this exact trade cost me at each broker? Pick any NSE stock and a quantity, and it works out every plan’s commission, taxes and fees, cheapest first.</p>
