@@ -67,6 +67,8 @@ const istDate = (iso) => new Date(iso).toLocaleDateString('en-CA', { timeZone: '
 const pricesISO = meta.date || (fullStocks && fullStocks.date) || '2026-10-23';
 const PRICES_DATE = fmtISODate(pricesISO);
 const RATES_DATE = status.ratesCheckedAt ? fmtISODate(istDate(status.ratesCheckedAt)) : PRICES_DATE;
+/* "2 Nov, 3:43 am IST"; the page swaps in "today …" once it loads the latest status.json */
+const istWhen = (iso) => { if (!iso) return '—'; const t = new Date(iso); const p = istDate(iso).split('-'); return +p[2] + ' ' + MON[+p[1] - 1] + ', ' + t.toLocaleTimeString('en-IN', { timeZone: 'Asia/Kolkata', hour: 'numeric', minute: '2-digit', hour12: true }).replace(/\s?([ap])\.?m\.?/i, (_, x) => ' ' + x.toLowerCase() + 'm') + ' IST'; };
 const YEAR = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' }).slice(0, 4);
 const inr = (n, dec) => { dec = dec == null ? 2 : dec; return '₹' + Number(n).toLocaleString('en-IN', { minimumFractionDigits: dec, maximumFractionDigits: dec }); };
 const pct = (p) => (+(p * 100).toFixed(4)).toString() + '%';
@@ -252,7 +254,8 @@ function buildHome(preview) {
   let body = read(path.join(SRC, '_body.html'))
     .replace('{{ROOT}}', root)
     .split('{{PRICES_DATE}}').join(PRICES_DATE)
-    .replace('{{RATES_WHEN}}', RATES_DATE)
+    .replace('{{RATES_WHEN}}', status.ratesCheckedAt ? istWhen(status.ratesCheckedAt) : RATES_DATE)
+    .replace('{{NEWS_CHECKED}}', istWhen(status.newsCheckedAt))
     .replace('{{PLAN_COUNT}}', String(BROKERS.length))
     .replace('{{NEWS_WHEN}}', esc(newsWhen))
     .replace('{{STOCK_COUNT}}', (meta.count || (fullStocks && fullStocks.count) || 0).toLocaleString('en-IN'))

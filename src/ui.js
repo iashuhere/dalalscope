@@ -426,6 +426,7 @@ if (typeof document !== 'undefined') (function(){
   function applyStatus(doc){
     if (!doc) return;
     if (doc.ratesCheckedAt) $('stRates').textContent = fmtWhen(doc.ratesCheckedAt);
+    if (doc.newsCheckedAt && $('stNews')) $('stNews').textContent = fmtWhen(doc.newsCheckedAt);
     if (doc.newsCheckedAt) $('newsWhen').textContent = 'Checked ' + fmtWhen(doc.newsCheckedAt) + '. Refreshes every hour.';
   }
 
