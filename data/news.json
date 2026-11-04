@@ -1,6 +1,17 @@
 {
- "updatedAt": "2026-10-31T02:46:07Z",
+ "updatedAt": "2026-11-04T22:12:04Z",
  "items": [
+  {
+   "id": "2026-11-04-industry-stockal-borderless-unauthorised-us-trades",
+   "d": "2026-11-04",
+   "who": "Industry",
+   "tag": "Outage",
+   "title": "Stockal (Borderless) probes unauthorised sales in US stock accounts",
+   "body": "Stockal said 26 customer accounts appeared accessed with valid logins and 13 saw unauthorised trades, with holdings sold and proceeds put into illiquid stocks. It reports no platform breach, no funds withdrawn, and has added extra authentication; losses are unconfirmed.",
+   "srcName": "Business Today",
+   "srcUrl": "https://businesstoday.in/markets/story/stockal-shock-how-a-suspected-cyber-attack-may-have-put-crores-in-indian-investors-us-stock-holdings-at-risk-565679-2026-11-04",
+   "addedAt": "2026-11-04T22:12:04Z"
+  },
   {
    "id": "2026-10-30-hdfc-sky-direct-bank-linked-funding",
    "d": "2026-10-30",
