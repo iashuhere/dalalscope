@@ -1,6 +1,17 @@
 {
- "updatedAt": "2026-11-06T08:12:38Z",
+ "updatedAt": "2026-11-09T00:11:49Z",
  "items": [
+  {
+   "id": "2026-11-06-zerodha-fund-house-renamed-case-funds",
+   "d": "2026-11-06",
+   "who": "Zerodha",
+   "tag": "Rebrand",
+   "title": "Zerodha Fund House renamed Zerodha CASE Funds as CASE Platforms joins",
+   "body": "Zerodha's mutual fund arm is now Zerodha CASE Funds, with CASE Platforms (formerly smallcase) as co-sponsor. It manages about ₹20,000 crore for over 12 lakh investors; schemes will be renamed but the passive, direct-plan approach is unchanged.",
+   "srcName": "Business Today",
+   "srcUrl": "https://www.businesstoday.in/personal-finance/story/zerodha-fund-house-becomes-zerodha-case-funds-as-investor-base-crosses-12-lakh-in-three-years-566285-2026-11-06",
+   "addedAt": "2026-11-09T00:11:49Z"
+  },
   {
    "id": "2026-11-06-industry-angel-one-overtakes-zerodha-no2",
    "d": "2026-11-06",
@@ -22,6 +33,17 @@
    "srcName": "Business Today",
    "srcUrl": "https://businesstoday.in/markets/story/stockal-shock-how-a-suspected-cyber-attack-may-have-put-crores-in-indian-investors-us-stock-holdings-at-risk-565679-2026-11-04",
    "addedAt": "2026-11-04T22:12:04Z"
+  },
+  {
+   "id": "2026-11-03-zerodha-instant-withdrawal-limit-5-lakh",
+   "d": "2026-11-03",
+   "who": "Zerodha",
+   "tag": "New product",
+   "title": "Zerodha raises free instant withdrawal limit to ₹5 lakh a day",
+   "body": "Zerodha has lifted its instant withdrawal limit from ₹2 lakh to ₹5 lakh per day, free of charge. It works 9 AM to 6 PM including weekends and holidays, with one request a day and a ₹100 minimum.",
+   "srcName": "Business Today",
+   "srcUrl": "https://www.businesstoday.in/personal-finance/story/zerodha-raises-instant-withdrawal-limit-to-rs5-lakh-nithin-kamath-says-rs1-lakh-crore-paid-out-free-565433-2026-11-03",
+   "addedAt": "2026-11-09T00:11:49Z"
   },
   {
    "id": "2026-10-30-hdfc-sky-direct-bank-linked-funding",
