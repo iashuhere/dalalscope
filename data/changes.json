@@ -1,6 +1,12 @@
 {
  "items": [
   {
+   "at": "2026-11-13T05:12:04Z",
+   "changes": [
+    "Sahi commodity futures: ₹10 or 0.05% (whichever is lower) → ₹10 per order"
+   ]
+  },
+  {
    "at": "2026-10-26T19:20:22Z",
    "changes": [
     "Added 10 broker plans: Flattrade, Sahi, Alice Blue, Samco, Sharekhan, IIFL Capital (Investor Plan), Tradejini, INDmoney, ProStocks (Flat Fee Plan) and Bajaj Broking (Freedom Pack)"

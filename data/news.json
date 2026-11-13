@@ -1,6 +1,17 @@
 {
- "updatedAt": "2026-11-09T00:11:49Z",
+ "updatedAt": "2026-11-13T05:12:26Z",
  "items": [
+  {
+   "id": "2026-11-13-sahi-commodity-futures-flat-fee",
+   "d": "2026-11-13",
+   "who": "Sahi",
+   "tag": "Pricing",
+   "title": "Sahi lists commodity futures at a flat ₹10 per order",
+   "body": "Sahi's charges page now shows commodity futures brokerage as a flat ₹10 per executed order, replacing the earlier lower of ₹10 or 0.05% of order value.",
+   "srcName": "Sahi charges page",
+   "srcUrl": "https://www.sahi.com/pricing",
+   "addedAt": "2026-11-13T05:12:26Z"
+  },
   {
    "id": "2026-11-06-zerodha-fund-house-renamed-case-funds",
    "d": "2026-11-06",
