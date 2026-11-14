@@ -1,0 +1,196 @@
+/* ---- Minimal theme prototype: calm, light-first, system type, soft cards ----
+   Appended after site.css; overrides the HUD look wholesale. Light is the default,
+   dark follows the existing toggle. One bold thing: the green "cheapest" verdict. */
+:root {
+  --void: #F5F5F7;
+  --hull: #FFFFFF;
+  --hull-solid: #FFFFFF;
+  --well: #F5F5F7;
+  --grid: transparent;
+  --edge: rgb(0 0 0 / 0.1);
+  --edge-hi: rgb(0 0 0 / 0.22);
+  --trace: #0066CC;
+  --trace-soft: rgb(0 102 204 / 0.07);
+  --ink: #1D1D1F;
+  --dim: #6E6E73;
+  --lock: #0B7A33;
+  --lock-soft: rgb(11 122 51 / 0.07);
+  --gov: #8E8E93;
+  --alert: #D70015;
+  --on-trace: #FFFFFF;
+  --glow: none;
+  --f-hud: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --f-body: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.05);
+  --shadow-pop: 0 12px 40px rgb(0 0 0 / 0.14);
+  color-scheme: light;
+}
+:root[data-theme="light"] {
+  --void: #F5F5F7; --hull: #FFFFFF; --hull-solid: #FFFFFF; --well: #F5F5F7; --grid: transparent;
+  --edge: rgb(0 0 0 / 0.1); --edge-hi: rgb(0 0 0 / 0.22);
+  --trace: #0066CC; --trace-soft: rgb(0 102 204 / 0.07);
+  --ink: #1D1D1F; --dim: #6E6E73;
+  --lock: #0B7A33; --lock-soft: rgb(11 122 51 / 0.07);
+  --gov: #8E8E93; --alert: #D70015; --on-trace: #FFFFFF; --glow: none;
+  color-scheme: light;
+}
+:root[data-theme="dark"] {
+  --void: #000000; --hull: #1C1C1E; --hull-solid: #1C1C1E; --well: #2C2C2E; --grid: transparent;
+  --edge: rgb(255 255 255 / 0.14); --edge-hi: rgb(255 255 255 / 0.28);
+  --trace: #409CFF; --trace-soft: rgb(10 132 255 / 0.14);
+  --ink: #F5F5F7; --dim: #98989D;
+  --lock: #30D158; --lock-soft: rgb(48 209 88 / 0.1);
+  --gov: #98989D; --alert: #FF453A; --on-trace: #FFFFFF;
+  --shadow-card: none; --shadow-pop: 0 12px 40px rgb(0 0 0 / 0.6);
+  color-scheme: dark;
+}
+
+body { background-image: none; font-size: 16px; }
+h1, h2, h3 { font-weight: 600; letter-spacing: -0.015em; }
+:focus-visible { outline: 2px solid var(--trace); outline-offset: 3px; }
+
+/* cards: rounded, shadowed, no brackets */
+.panel { border: 0; border-radius: 18px; box-shadow: var(--shadow-card); backdrop-filter: none; padding: 24px; }
+.panel::before, .panel::after { display: none; }
+@media (max-width: 480px) { .panel { padding: 18px; } }
+
+/* top bar */
+.bar-top { border-bottom: 0; padding-bottom: 0; }
+.mark { letter-spacing: -0.01em; }
+.status li { border: 0; background: var(--hull); border-radius: 980px; padding: 5px 13px; box-shadow: var(--shadow-card); }
+.status .live { color: var(--lock); background: var(--lock-soft); box-shadow: none; }
+.status .live i { box-shadow: none; }
+.theme { border: 0; background: var(--well); border-radius: 980px; padding: 3px; }
+:root[data-theme="dark"] .theme { background: var(--hull); }
+.theme button { border-radius: 980px; padding: 5px 13px; }
+.theme button[aria-pressed="true"] { background: var(--hull-solid); color: var(--ink); box-shadow: 0 1px 4px rgb(0 0 0 / 0.16); }
+:root[data-theme="dark"] .theme button[aria-pressed="true"] { background: var(--well); }
+.theme button:focus-visible, .chips button:focus-visible, .seg button:focus-visible, .qty button:focus-visible,
+.tile input:focus-visible + .box, .pl-filter button:focus-visible, .pl-ctrl button:focus-visible,
+.hl li button:focus-visible, .brow > summary:focus-visible, .srow > summary:focus-visible,
+.faq summary:focus-visible, .tips-btn:focus-visible { outline-color: var(--trace); }
+.tips-btn { border: 0; background: var(--hull); border-radius: 980px; padding: 6px 13px; box-shadow: var(--shadow-card); }
+.tips-btn:hover { color: var(--trace); }
+
+/* hero */
+.intro h1 { letter-spacing: -0.022em; line-height: 1.02; font-weight: 700; }
+.intro h1 span { text-shadow: none; color: var(--ink); }
+.intro h1 span::after { content: ""; }
+.intro p { font-size: 1.12rem; color: var(--dim); }
+
+/* console controls */
+.field > label, .field > .lab { font-weight: 600; font-size: 0.86rem; color: var(--dim); }
+.combo input { border: 1px solid var(--edge); border-radius: 12px; background: var(--well); font-size: 1.02rem; }
+:root[data-theme="dark"] .combo input { background: var(--well); }
+.combo input:focus { border-color: var(--trace); box-shadow: 0 0 0 3px var(--trace-soft); }
+.combo .mag { color: var(--dim); }
+.listbox { border: 1px solid var(--edge); border-radius: 14px; box-shadow: var(--shadow-pop); padding: 6px; }
+.listbox li { border-left: 0; border-radius: 9px; }
+.listbox li[aria-selected="true"] { background: var(--trace); }
+.listbox li[aria-selected="true"] .ls, .listbox li[aria-selected="true"] .ln, .listbox li[aria-selected="true"] .lt { color: #fff; }
+.listbox .ls { letter-spacing: 0; }
+.listbox .lt { color: var(--dim); }
+.chips button { border: 0; background: var(--well); border-radius: 980px; padding: 5px 12px; letter-spacing: 0; font-weight: 500; }
+:root[data-theme="dark"] .chips button { background: var(--well); }
+.chips button:hover { color: var(--ink); background: var(--edge); }
+.chips button[aria-pressed="true"] { background: var(--trace); color: #fff; font-weight: 600; }
+.picked { border-left: 0; border-radius: 12px; }
+.picked .pt { color: var(--lock); }
+.qty { border: 1px solid var(--edge); border-radius: 12px; overflow: hidden; background: var(--hull-solid); }
+.qty input { border-inline-color: var(--edge); }
+.qty button { color: var(--trace); font-weight: 600; }
+.seg { border: 0; background: var(--well); border-radius: 12px; padding: 3px; }
+.seg button { border: 0; border-radius: 9px; }
+.seg button[aria-pressed="true"] { background: var(--hull-solid); color: var(--ink); box-shadow: 0 1px 4px rgb(0 0 0 / 0.14); font-weight: 600; }
+:root[data-theme="dark"] .seg { background: var(--well); }
+:root[data-theme="dark"] .seg button[aria-pressed="true"] { background: #48484A; }
+.value { border-top: 1px solid var(--edge); }
+.notice { border-left: 0; border-radius: 12px; background: var(--lock-soft); color: var(--ink); padding: 10px 14px; }
+
+/* readout */
+.lockon { border-bottom: 1px solid var(--edge); }
+.gauge .arc.brk { filter: none; }
+.gauge .ticks { stroke: var(--edge); }
+.gauge .track { stroke: var(--well); }
+:root[data-theme="dark"] .gauge .track { stroke: var(--well); }
+.gauge-c b { color: var(--ink); font-weight: 700; }
+.read .rb { color: var(--lock); letter-spacing: -0.01em; }
+.read .caveat { color: var(--dim); }
+.meter { border-radius: 980px; overflow: hidden; height: 6px; -webkit-mask: none; mask: none; background: var(--well); }
+:root[data-theme="dark"] .meter { background: var(--well); }
+
+/* ranked list rows */
+.brow { border: 1px solid var(--edge); border-radius: 14px; background: var(--hull-solid); overflow: hidden; }
+.brow > summary:hover { background: var(--well); }
+.brow.lock { border: 1.5px solid var(--lock); background: var(--hull-solid); }
+.brow.lock::before, .brow.lock::after { display: none; }
+.rk { font-weight: 600; }
+.who b { letter-spacing: -0.01em; }
+.who .agg { color: var(--dim); }
+.com.low b { color: var(--ink); }
+.bdetail { border-top: 1px solid var(--edge); }
+.bdetail h3 { color: var(--ink); }
+
+/* news player */
+.dot { box-shadow: none; background: var(--lock); }
+.pl-who { color: var(--ink); }
+.pl-tag { border: 0; background: var(--well); border-radius: 980px; padding: 1px 9px; }
+.pl-filter button { border: 0; background: var(--well); border-radius: 980px; padding: 4px 12px; }
+.pl-filter button[aria-pressed="true"] { background: var(--ink); color: var(--void); }
+.pl-progress { border-radius: 980px; overflow: hidden; }
+.pl-progress span { box-shadow: none; }
+.pl-ctrl button { border: 1px solid var(--edge); border-radius: 50%; }
+.pl-ctrl button.main { border-radius: 980px; background: var(--trace); border-color: var(--trace); }
+.fresh { border-radius: 5px; background: var(--lock); color: #fff; }
+.hl li button { border-left: 0; border-radius: 9px; border-bottom-color: var(--edge); }
+.hl li button.cur { background: var(--trace-soft); }
+.hl .t b { color: var(--ink); }
+
+/* segment tiles */
+.tile .box { border: 1px solid var(--edge); border-radius: 12px; background: var(--hull-solid); }
+.tile .box::before { border-radius: 5px; }
+.tile input:checked + .box { border-color: var(--trace); background: var(--trace-soft); }
+.tile input:checked + .box::before { box-shadow: none; }
+.srow { border: 1px solid var(--edge); border-radius: 14px; background: var(--hull-solid); overflow: hidden; }
+.srow > summary:hover { background: var(--well); }
+.srow.lock { border: 1.5px solid var(--lock); background: var(--hull-solid); }
+.cell { border: 1px solid var(--edge); border-radius: 9px; }
+.cell.best { border-color: var(--lock); }
+.cell.best .cr, .cell.best .cc { color: var(--lock); }
+.verdict2 { border-left: 0; border-radius: 12px; }
+.verdict2 .w2 { letter-spacing: -0.01em; }
+.size-grid input { border-radius: 10px; border-color: var(--edge); }
+.empty { border-radius: 12px; }
+
+/* tables */
+.table-scroll { border: 1px solid var(--edge); border-radius: 12px; }
+.rc-t tbody th a { border-bottom: 0; color: var(--trace); }
+.rc-t tbody tr:hover { background: var(--well); }
+.stat-t .was { color: var(--dim); }
+
+/* FAQ + guides */
+.faq summary::after { color: var(--dim); font-weight: 400; }
+.g-tile { border-radius: 18px; }
+.g-tile:hover { box-shadow: 0 4px 16px rgb(0 0 0 / 0.08); }
+.g-k { color: var(--dim); font-weight: 600; }
+.g-tile b { color: var(--ink); }
+.cmp-links a { border: 0; background: var(--hull); border-radius: 980px; padding: 6px 15px; font-weight: 500; box-shadow: var(--shadow-card); }
+.cmp-links a:hover { color: var(--trace); }
+.cta { border-radius: 980px; border: 0; padding: 11px 22px; }
+.cta:hover { background: color-mix(in srgb, var(--trace) 88%, #000); box-shadow: none; }
+
+/* tour */
+.tour-ring { border-color: var(--trace); border-radius: 14px; box-shadow: 0 0 0 4px var(--trace-soft); }
+.tour { border: 0; border-radius: 16px; box-shadow: var(--shadow-pop); }
+.tour-arrow { border: 0; }
+.tour-step { color: var(--trace); }
+.tour-btns .skip { color: var(--dim); }
+.tour-btns .back, .tour-btns .next { border-radius: 980px; border-color: var(--edge); }
+.tour-btns .next { background: var(--trace); border-color: var(--trace); color: #fff; }
+:root[data-theme="light"] .tour-btns .next { color: #fff; }
+
+/* sections breathe more */
+.wrap { gap: 56px; }
+.sec-head h2 { letter-spacing: -0.02em; }
+.sec-head .when { color: var(--dim); }
+footer { border-top: 1px solid var(--edge); }
