@@ -383,6 +383,9 @@ function aboutPage() {
     <section class="panel prose" aria-labelledby="ab-ind"><h2 id="ab-ind">Independent and free</h2>
       <p>DalalScope is not owned by, paid by or affiliated with any broker, exchange or regulator. There are no referral links, paid placements or ads, and brokers are ranked by cost alone.</p>
       <p>${who} The code and every data file are public${REPO_URL ? ` on <a href="${REPO_URL}" target="_blank" rel="noopener">GitHub</a>` : ''}, so anyone can check how a number was worked out.</p></section>
+    <section class="panel prose" aria-labelledby="ab-why"><h2 id="ab-why">Why this exists</h2>
+      <p>India has added crores of first-time investors in the last few years. Most of us start the same way: download an app, see “zero brokerage” in the ad, and tap buy. Then the contract note arrives, and the “free” trade has STT, exchange charges, stamp duty, GST and a DP charge on it. None of that is hidden exactly, but it is spread across rate cards, circulars and fine print that a new investor has no reason to have read.</p>
+      <p>I built DalalScope so that nobody new to the market gets fooled by a headline price. Put in the exact trade you are about to make and see the full cost at every broker plan, before you place it, with every number traceable to the broker’s own published page or the official tax rate. Awareness is the whole point of this site; there is nothing to sign up for and nothing being sold.</p></section>
     <section class="panel prose" aria-labelledby="ab-data"><h2 id="ab-data">Where the numbers come from</h2>
       <ul>
         <li><b>Stock prices:</b> NSE’s official end-of-day bhavcopy, refreshed after every trading day. Latest: ${PRICES_DATE}.</li>
