@@ -228,7 +228,10 @@ ${items.map(([q, a]) => `      <details class="panel"><summary><h3>${esc(q)}</h3
   </section>`;
 }
 
-const ORG_LD = { '@context': 'https://schema.org', '@type': 'Organization', '@id': SITE_URL + '#org', name: BRAND, url: SITE_URL, logo: SITE_URL + 'assets/icon-512.png', description: 'Independent brokerage cost comparison for Indian stock traders.', sameAs: REPO_URL ? [REPO_URL] : [] };
+const PROFILES = ['https://x.com/iashuhere', 'https://www.quora.com/profile/Ashok-Kumar-1023', 'https://github.com/iashuhere'];
+const PERSON_LD = CONFIG.owner ? { '@context': 'https://schema.org', '@type': 'Person', '@id': SITE_URL + '#owner', name: CONFIG.owner, description: CONFIG.ownerNote || undefined, url: SITE_URL + 'about/', sameAs: PROFILES } : null;
+const ORG_LD = { '@context': 'https://schema.org', '@type': 'Organization', '@id': SITE_URL + '#org', name: BRAND, url: SITE_URL, logo: SITE_URL + 'assets/icon-512.png', description: 'Independent brokerage cost comparison for Indian stock traders.', email: CONFIG.contactEmail || undefined, founder: CONFIG.owner ? { '@type': 'Person', name: CONFIG.owner, url: SITE_URL + 'about/' } : undefined, sameAs: (REPO_URL ? [REPO_URL] : []).concat(PROFILES) };
+const articleLD = (headline, url, datePublished) => ({ '@context': 'https://schema.org', '@type': 'Article', headline, mainEntityOfPage: url, datePublished, dateModified: status.ratesCheckedAt || status.ratesUpdatedAt || datePublished, inLanguage: 'en-IN', author: CONFIG.owner ? { '@type': 'Person', name: CONFIG.owner, url: SITE_URL + 'about/' } : { '@id': SITE_URL + '#org' }, publisher: { '@id': SITE_URL + '#org' } });
 
 function buildHome(preview) {
   const root = '';
@@ -278,7 +281,8 @@ function brokerPage(g) {
   const desc = `${g.name} charges ${shortRule(p0.r.del)} on delivery, ${shortRule(p0.r.intra)} on intraday and ${shortRule(p0.r.opt)} on options${g.plans.length > 1 ? ' on its default plan' : ''}. See DP, AMC and what a typical trade really costs with STT and GST.`;
   const others = groups.filter((x) => x !== g);
   const vsWith = pairList.filter((p) => p.A === g || p.B === g);
-  const jsonld = [{ '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
+  const jsonld = [{ '@context': 'https://schema.org', '@type': 'WebPage', name: g.name + ' brokerage calculator and charges', url: canonical, dateModified: status.ratesCheckedAt || status.ratesUpdatedAt, inLanguage: 'en-IN', publisher: { '@id': SITE_URL + '#org' } },
+  { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
     { '@type': 'ListItem', position: 1, name: BRAND, item: SITE_URL },
     { '@type': 'ListItem', position: 2, name: 'Rate cards', item: SITE_URL + '#rate-cards' },
     { '@type': 'ListItem', position: 3, name: g.name + ' brokerage charges', item: canonical },
@@ -397,7 +401,7 @@ function aboutPage() {
       <p>Brokers change their rate cards often. If a rate here doesn’t match a broker’s official page${contact ? `, ${contact}` : ''}. Corrections go live as soon as they are checked against the broker’s own page, and every rate change is listed on <a href="${root}how-we-calculate/#changes">How we calculate</a>.</p></section>
     <section class="panel prose" aria-labelledby="ab-nfa"><h2 id="ab-nfa">Not investment advice</h2>
       <p>DalalScope compares published prices to help you understand costs. It does not recommend brokers, stocks or trades. Some plans are only for new accounts or need a paid subscription; check the broker’s terms before you open an account.</p></section>`;
-  return shell({ title: 'About DalalScope: Independent Brokerage Comparison for India', desc: 'Who runs DalalScope, where its stock prices and broker rates come from, how often they are checked, and how to report a wrong rate.', canonical: url, root, crumbs: 'About', jsonld: [ORG_LD, { '@context': 'https://schema.org', '@type': 'AboutPage', name: 'About DalalScope', url, about: { '@id': SITE_URL + '#org' } }, crumbLD('About', url)], body });
+  return shell({ title: 'About DalalScope: Independent Brokerage Comparison for India', desc: 'Who runs DalalScope, where its stock prices and broker rates come from, how often they are checked, and how to report a wrong rate.', canonical: url, root, crumbs: 'About', jsonld: [ORG_LD].concat(PERSON_LD ? [PERSON_LD] : []).concat([{ '@context': 'https://schema.org', '@type': 'AboutPage', name: 'About DalalScope', url, about: { '@id': SITE_URL + '#org' } }, crumbLD('About', url)]), body });
 }
 
 function methodPage() {
@@ -469,7 +473,9 @@ function methodPage() {
       <ol class="changes">
         ${log}
       </ol></section>`;
-  return shell({ title: 'How We Calculate Brokerage, STT, GST and DP Charges | DalalScope', desc: 'The exact formula and rates DalalScope uses: brokerage rules, STT, stamp duty, exchange and SEBI fees, GST and DP charges, with a worked example and a log of rate changes.', canonical: url, root, crumbs: 'How we calculate', jsonld: [{ '@context': 'https://schema.org', '@type': 'WebPage', name: 'How DalalScope calculates your costs', url, dateModified: status.ratesUpdatedAt || status.ratesCheckedAt, publisher: { '@id': SITE_URL + '#org' } }, crumbLD('How we calculate', url)], body });
+  return shell({ title: 'How We Calculate Brokerage, STT, GST and DP Charges | DalalScope', desc: 'The exact formula and rates DalalScope uses: brokerage rules, STT, stamp duty, exchange and SEBI fees, GST and DP charges, with a worked example and a log of rate changes.', canonical: url, root, crumbs: 'How we calculate', jsonld: [{ '@context': 'https://schema.org', '@type': 'WebPage', name: 'How DalalScope calculates your costs', url, dateModified: status.ratesUpdatedAt || status.ratesCheckedAt, publisher: { '@id': SITE_URL + '#org' } },
+  { '@context': 'https://schema.org', '@type': 'Dataset', name: 'Indian stock broker rate cards', description: 'Brokerage rules, DP charges and demat AMC for ' + BROKERS.length + ' Indian broker plans, checked daily against each broker\u2019s published charges page, with a public change log.', url, license: REPO_URL ? REPO_URL + '/blob/main/LICENSE' : undefined, isAccessibleForFree: true, creator: { '@id': SITE_URL + '#org' }, dateModified: status.ratesUpdatedAt || status.ratesCheckedAt, distribution: [{ '@type': 'DataDownload', encodingFormat: 'application/json', contentUrl: SITE_URL + 'data/brokers.json' }, { '@type': 'DataDownload', encodingFormat: 'application/json', contentUrl: SITE_URL + 'data/changes.json' }] },
+  crumbLD('How we calculate', url)], body });
 }
 
 /* ---------- guides: cheapest broker by segment, head-to-head comparisons, mini calculator ---------- */
@@ -707,8 +713,9 @@ function cheapPage(cfg) {
       <h2 class="h-gap">Popular head-to-head comparisons</h2>
       <ul class="cmp-links">${pops.map((p) => `<li><a href="${root}compare/${p.slug}/">${esc(p.A.name)} vs ${esc(p.B.name)}</a></li>`).join('')}</ul>
     </section>`;
+  const rankLD = { '@context': 'https://schema.org', '@type': 'ItemList', name: cfg.h1 + ', all plans ranked', itemListOrder: 'https://schema.org/ItemListOrderAscending', numberOfItems: f0.rows.length, itemListElement: f0.rows.map((r, i) => ({ '@type': 'ListItem', position: i + 1, name: fullName(r.b), url: SITE_URL + 'brokers/' + groupOf(r.b).slug + '/' })) };
   return guidePage({ title, desc, canonical: url, root, body, crumbs: [['Cheapest brokers', root + 'cheapest-broker/'], [cap(cfg.name), null]],
-    jsonld: [crumbsLD([['Cheapest brokers', SITE_URL + 'cheapest-broker/'], [cap(cfg.name), url]]), faqLD(qa)] });
+    jsonld: [articleLD(cfg.title, url, '2026-10-31'), rankLD, crumbsLD([['Cheapest brokers', SITE_URL + 'cheapest-broker/'], [cap(cfg.name), url]]), faqLD(qa)] });
 }
 
 function cheapHub() {
@@ -841,7 +848,7 @@ function vsPage(p) {
       <ul class="cmp-links">${CHEAP.map((c) => `<li><a href="${root}${cheapUrl(c)}">${esc(cap(c.name))}</a></li>`).join('')}</ul>
     </section>`;
   return guidePage({ title: `${A} vs ${B} Brokerage Charges ${YEAR}: Which Is Cheaper? | ${BRAND}`, desc: desc.length > 300 ? desc.slice(0, 297) + '…' : desc, canonical: url, root, body, calc: true,
-    crumbs: [['Compare brokers', root + 'compare/'], [`${A} vs ${B}`, null]], jsonld: [crumbsLD([['Compare brokers', SITE_URL + 'compare/'], [`${A} vs ${B}`, url]]), faqLD(qa)] });
+    crumbs: [['Compare brokers', root + 'compare/'], [`${A} vs ${B}`, null]], jsonld: [articleLD(`${A} vs ${B}: brokerage charges compared`, url, '2026-10-31'), crumbsLD([['Compare brokers', SITE_URL + 'compare/'], [`${A} vs ${B}`, url]]), faqLD(qa)] });
 }
 
 function compareHub() {
