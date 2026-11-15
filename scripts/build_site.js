@@ -229,7 +229,7 @@ ${items.map(([q, a]) => `      <details class="panel"><summary><h3>${esc(q)}</h3
 }
 
 const PROFILES = ['https://x.com/iashuhere', 'https://www.quora.com/profile/Ashok-Kumar-1023', 'https://github.com/iashuhere'];
-const ORG_PROFILES = ['https://www.linkedin.com/company/dalalscope/', 'https://www.facebook.com/profile.php?id=61596207647602'];
+const ORG_PROFILES = ['https://x.com/dalalscope', 'https://www.linkedin.com/company/dalalscope/', 'https://www.facebook.com/profile.php?id=61596207647602'];
 const PERSON_LD = CONFIG.owner ? { '@context': 'https://schema.org', '@type': 'Person', '@id': SITE_URL + '#owner', name: CONFIG.owner, description: CONFIG.ownerNote || undefined, url: SITE_URL + 'about/', sameAs: PROFILES } : null;
 const ORG_LD = { '@context': 'https://schema.org', '@type': 'Organization', '@id': SITE_URL + '#org', name: BRAND, url: SITE_URL, logo: SITE_URL + 'assets/icon-512.png', description: 'Independent brokerage cost comparison for Indian stock traders.', email: CONFIG.contactEmail || undefined, founder: CONFIG.owner ? { '@type': 'Person', name: CONFIG.owner, url: SITE_URL + 'about/' } : undefined, sameAs: ORG_PROFILES.concat(REPO_URL ? [REPO_URL] : []).concat(PROFILES) };
 const articleLD = (headline, url, datePublished) => ({ '@context': 'https://schema.org', '@type': 'Article', headline, mainEntityOfPage: url, datePublished, dateModified: status.ratesCheckedAt || status.ratesUpdatedAt || datePublished, inLanguage: 'en-IN', author: CONFIG.owner ? { '@type': 'Person', name: CONFIG.owner, url: SITE_URL + 'about/' } : { '@id': SITE_URL + '#org' }, publisher: { '@id': SITE_URL + '#org' } });
