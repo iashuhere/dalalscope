@@ -1,0 +1,83 @@
+{
+  "checkedAt": "2026-11-16T14:45:00Z",
+  "list": [
+    {
+      "id": "binance",
+      "name": "Binance",
+      "fee": 0.001,
+      "feeLabel": "0.10% maker and taker",
+      "inrDeposit": "Via P2P and partners; terms vary",
+      "inrWithdrawal": "Via P2P and partners; terms vary",
+      "notes": [
+        "FIU-registered global exchange; the regular-user spot fee is 0.10% per order, with 25% off when fees are paid in BNB.",
+        "INR moves in and out mainly through P2P and payment partners rather than direct bank rails, which adds its own friction and spread."
+      ],
+      "src": "https://www.binance.com/en-IN/fee/trading"
+    },
+    {
+      "id": "bitbns",
+      "name": "Bitbns",
+      "fee": 0.0025,
+      "feeLabel": "0.25% per order (0.1875% with Pay-with-BNS on)",
+      "inrDeposit": "Paused at the time of checking",
+      "inrWithdrawal": "Published in the app",
+      "notes": [
+        "The 0.25% standard fee drops to 0.1875% only if you hold BNS tokens and enable Pay with BNS.",
+        "INR deposits were paused for maintenance when we checked; confirm they are live before opening an account."
+      ],
+      "src": "https://bitbns.com/fees/"
+    },
+    {
+      "id": "zebpay",
+      "name": "ZebPay",
+      "fee": 0.0045,
+      "feeLabel": "0.45% maker and taker (Quick Trade 0.5%+)",
+      "inrDeposit": "Free",
+      "inrWithdrawal": "₹15 flat",
+      "notes": [
+        "0.45% applies on the exchange order book below ₹5 lakh of 30-day volume; the simpler Quick Trade screen charges 0.5% or more.",
+        "INR deposits are free and withdrawals cost a flat ₹15."
+      ],
+      "src": "https://zebpay.com/in/features/pricing"
+    },
+    {
+      "id": "coindcx",
+      "name": "CoinDCX",
+      "fee": 0.005,
+      "feeLabel": "0.50% maker and taker",
+      "inrDeposit": "Free (bank transfer)",
+      "inrWithdrawal": "Published in the app",
+      "notes": [
+        "0.50% applies on INR spot below ₹2 lakh of 30-day volume; it falls to 0.42% up to ₹5 lakh and 0.17% beyond that.",
+        "Some newly listed pairs carry an extra \"coverage fee\" on top of the base rate."
+      ],
+      "src": "https://coindcx.com/fees"
+    },
+    {
+      "id": "coinswitch",
+      "name": "CoinSwitch",
+      "fee": null,
+      "feeLabel": "Not published; shown at order time",
+      "inrDeposit": "Published in the app",
+      "inrWithdrawal": "Published in the app",
+      "notes": [
+        "CoinSwitch does not publish a public fee schedule; the fee for each order is shown on the preview screen before you confirm, and part of the cost sits in the buy–sell spread.",
+        "A cost you can only see per order is hard to compare; check the preview against the exchanges above before trading."
+      ],
+      "src": "https://coinswitch.co/"
+    },
+    {
+      "id": "mudrex",
+      "name": "Mudrex",
+      "fee": null,
+      "feeLabel": "Not published; shown at order time",
+      "inrDeposit": "Published in the app",
+      "inrWithdrawal": "Published in the app",
+      "notes": [
+        "Mudrex does not publish a public spot fee schedule; the fee appears on the order screen before you confirm.",
+        "A cost you can only see per order is hard to compare; check the preview against the exchanges above before trading."
+      ],
+      "src": "https://mudrex.com/"
+    }
+  ]
+}

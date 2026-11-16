@@ -57,7 +57,7 @@ const REPORT_URL = CONFIG.contactEmail ? 'mailto:' + CONFIG.contactEmail + '?sub
   : REPO_URL ? REPO_URL + '/issues/new?title=' + encodeURIComponent('Wrong rate: ') : '';
 const REPORT_ATTRS = REPORT_URL.startsWith('mailto:') ? '' : ' target="_blank" rel="noopener"';
 function siteLinks(root) {
-  return [`<li><a href="${root}cheapest-broker/">Cheapest broker by segment</a></li>`, `<li><a href="${root}compare/">Compare brokers</a></li>`, `<li><a href="${root}about/">About DalalScope</a></li>`, `<li><a href="${root}how-we-calculate/">How we calculate</a></li>`]
+  return [`<li><a href="${root}cheapest-broker/">Cheapest broker by segment</a></li>`, `<li><a href="${root}compare/">Compare brokers</a></li>`, `<li><a href="${root}crypto/">Crypto exchange fees</a></li>`, `<li><a href="${root}about/">About DalalScope</a></li>`, `<li><a href="${root}how-we-calculate/">How we calculate</a></li>`]
     .concat(REPORT_URL ? [`<li><a href="${esc(REPORT_URL)}"${REPORT_ATTRS}>Report a wrong rate</a></li>`] : [])
     .concat(CONFIG.contactEmail ? [`<li><a href="mailto:${esc(CONFIG.contactEmail)}">Contact</a></li>`] : []).join('');
 }
@@ -868,13 +868,83 @@ function compareHub() {
   return guidePage({ title: `Compare Indian Stock Brokers Head to Head (${YEAR}) | ${BRAND}`, desc: `${pairList.length} broker comparisons, including Zerodha vs Groww, Angel One vs Upstox and Dhan vs Zerodha: brokerage, DP and AMC side by side with real trade costs.`, canonical: url, root, body, crumbs: [['Compare brokers', null]], jsonld: [crumbsLD([['Compare brokers', url]])] });
 }
 
+/* --- crypto exchange fees --- */
+const CRYPTO = JSON.parse(read(path.join(ROOT, 'data', 'crypto.json')));
+const CRYPTO_DATE = fmtISODate(istDate(CRYPTO.checkedAt));
+function cryptoCosts(v) {
+  return CRYPTO.list.filter((e) => e.fee != null).map((e) => {
+    const fees = v * e.fee * 1.18 * 2, tds = v * 0.01;
+    return { e, fees, tds, total: fees + tds };
+  }).sort((a, b) => a.total - b.total);
+}
+function cryptoPage() {
+  const root = '../';
+  const url = SITE_URL + 'crypto/';
+  const big = cryptoCosts(100000), small = cryptoCosts(10000);
+  const lo = big[0], hi = big[big.length - 1];
+  const unpub = CRYPTO.list.filter((e) => e.fee == null);
+  const lead = `On a \u20B91 lakh buy and sell, published trading fees with GST run from ${inr(lo.fees)} at ${lo.e.name} to ${inr(hi.fees)} at ${hi.e.name} \u2014 and on top of that, every exchange must deduct 1% TDS (${inr(1000)}) when you sell, whichever you use. The TDS is not a fee: you claim it back against your income tax.`;
+  const rows = big.map((r, i) => {
+    const sm = small.find((x) => x.e === r.e);
+    return `<tr${i === 0 ? ' class="win"' : ''}><td class="num rk">${i + 1}</td><th scope="row">${esc(r.e.name)}<small>${esc(r.e.feeLabel)}</small></th><td class="num">${inr(sm.fees)}</td><td class="num"><b>${inr(r.fees)}</b></td><td class="num">${inr(r.tds)}</td><td class="num">${inr(r.total)}</td></tr>`;
+  }).join('\n          ');
+  const unpubRows = unpub.map((e) => `<tr><td class="num rk">\u2014</td><th scope="row">${esc(e.name)}<small>${esc(e.feeLabel)}</small></th><td class="num" colspan="4">Fee shown on the order screen; part of the cost sits in the spread</td></tr>`).join('\n          ');
+  const cards = CRYPTO.list.map((e) => `<section class="panel" aria-labelledby="cx-${e.id}">
+      <h2 id="cx-${e.id}">${esc(e.name)}</h2>
+      <div class="table-scroll"><table class="ex-t gt"><tbody>
+        <tr><th scope="row">Spot trading fee</th><td>${esc(e.feeLabel)}</td></tr>
+        <tr><th scope="row">GST on the fee</th><td>${e.fee != null ? '18%, on top of the fee' : '18% on whatever fee is charged'}</td></tr>
+        <tr><th scope="row">INR deposit</th><td>${esc(e.inrDeposit)}</td></tr>
+        <tr><th scope="row">INR withdrawal</th><td>${esc(e.inrWithdrawal)}</td></tr>
+      </tbody></table></div>
+      <ul class="notes">${e.notes.map((n) => `<li>${esc(n)}</li>`).join('')}</ul>
+      <p class="fine">Source: <a href="${esc(e.src)}" target="_blank" rel="noopener">official fee page</a>, checked ${CRYPTO_DATE}.</p>
+    </section>`).join('\n    ');
+  const qa = [
+    ['Which crypto exchange has the lowest fees in India?', `Among exchanges that publish their rates, ${lo.e.name} charges the lowest spot fee (${lo.e.feeLabel}): ${inr(lo.fees)} in fees and GST on a \u20B91 lakh buy and sell. ${hi.e.name} charges ${hi.e.feeLabel}, which comes to ${inr(hi.fees)} on the same trade. Checked ${CRYPTO_DATE}.`],
+    ['Is the 1% TDS a fee?', 'No. Under section 194S, 1% of every sell is deducted at source and deposited against your PAN, like TDS on salary. You claim it back when you file your return, so it is a cash-flow cost, not money lost \u2014 but it does come out of every sell, at every exchange, on top of trading fees.'],
+    ['How is crypto taxed in India?', 'Gains on crypto (virtual digital assets) are taxed at a flat 30% plus 4% cess, with no deduction except the cost of acquisition. Losses cannot be set off against other income or other crypto gains, and cannot be carried forward. This tax usually dwarfs the difference in exchange fees.'],
+    ['Why do crypto trades cost more than stock trades?', 'A \u20B91 lakh delivery trade in stocks costs \u20B9233\u2013930 all-in at the brokers we track. The same value traded in crypto costs ' + inr(lo.total) + '\u2013' + inr(hi.total) + ' once fees, GST and the 1% TDS deduction are counted \u2014 and crypto gains are then taxed at 30% with no loss set-off, against 12.5% long-term capital gains for equity.']
+  ];
+  const body = `    <header class="bp-head">
+      <h1>Crypto exchange fees in India</h1>
+      <p class="lead">${esc(lead)}</p>
+      <p class="checked">Rates checked ${CRYPTO_DATE} against each exchange\u2019s official fee page. FIU-registered exchanges only.</p>
+      <a class="cta" href="${root}">Compare stock broker charges</a>
+    </header>
+    <section class="panel" aria-labelledby="cx-rank">
+      <h2 id="cx-rank">What a round trip really deducts</h2>
+      <p class="sub">One buy and one sell at the same price, market orders. \u201CFees + GST\u201D is what the exchange keeps; TDS is deducted on the sell and claimable against your income tax.</p>
+      <div class="table-scroll"><table class="ex-t gt cx-t">
+        <thead><tr><th scope="col" class="num">#</th><th scope="col">Exchange and spot fee</th><th scope="col" class="num">Fees + GST on \u20B910,000</th><th scope="col" class="num">Fees + GST on \u20B91 lakh</th><th scope="col" class="num">TDS on the \u20B91 lakh sell</th><th scope="col" class="num">Total deducted</th></tr></thead>
+        <tbody>
+          ${rows}
+          ${unpubRows}
+        </tbody>
+      </table></div>
+      <p class="fine">Fee tiers above assume a regular user below each exchange\u2019s volume threshold, paying fees in INR (no token discounts). Spreads are extra and vary by pair and moment.</p>
+    </section>
+    <section class="panel prose-s" aria-labelledby="cx-tax"><h2 id="cx-tax">The costs no exchange controls</h2>
+      <p>Three costs are identical everywhere: <b>1% TDS</b> on every sell under section 194S (claimable in your return); <b>18% GST</b> on whatever fee the exchange charges; and <b>30% tax plus 4% cess</b> on gains, with no loss set-off. An exchange can only compete on its own fee and its spread \u2014 which is why the fee table above, small as the numbers look next to the taxes, is still the only part you can choose.</p>
+    </section>
+    ${cards}
+    ${faqBlock(qa)}
+    <section class="panel" aria-labelledby="cx-more">
+      <h2 id="cx-more">Trading stocks too?</h2>
+      <ul class="cmp-links"><li><a href="${root}">Brokerage calculator</a></li>${CHEAP.map((c) => `<li><a href="${root}${cheapUrl(c)}">Cheapest for ${esc(c.tile)}</a></li>`).join('')}<li><a href="${root}compare/">Compare brokers</a></li></ul>
+    </section>`;
+  const rankLD = { '@context': 'https://schema.org', '@type': 'ItemList', name: 'Indian crypto exchanges by published spot fee', itemListOrder: 'https://schema.org/ItemListOrderAscending', numberOfItems: big.length, itemListElement: big.map((r, i) => ({ '@type': 'ListItem', position: i + 1, name: r.e.name })) };
+  return guidePage({ title: `Crypto Exchange Fees in India Compared (${MONTH_YEAR}) | ${BRAND}`, desc: `What a \u20B91 lakh crypto trade really deducts at ${joinNames(big.map((r) => r.e.name))}: trading fees, 18% GST and the 1% TDS, from each exchange\u2019s official fee page.`, canonical: url, root, body,
+    crumbs: [['Crypto exchange fees', null]], jsonld: [articleLD('Crypto Exchange Fees in India Compared', url, '2026-11-16'), rankLD, crumbsLD([['Crypto exchange fees', url]]), faqLD(qa)] });
+}
+
 /* home page section linking into the guides */
 function guidesSection(root) {
   const tiles = CHEAP.map((c) => { const f = segFacts(c.segs[0]); return `<li><a class="g-tile panel" href="${root}${cheapUrl(c)}"><span class="g-k">Cheapest for ${esc(c.tile)}</span><b>${esc(namesOf(f.win, 2))}</b><span class="g-v">${inr(f.win[0].c.total)} on ${esc(SHORT_EX[f.s])}</span></a></li>`; }).join('');
   return `  <section class="guides" id="guides" aria-labelledby="gd-h">
     <div class="sec-head"><h2 id="gd-h">Cheapest broker by segment</h2><p>Who costs least right now on a typical trade, with every tax and fee included. Rankings update whenever a broker changes its rates.</p></div>
     <ul class="g-grid">${tiles}</ul>
-    <nav aria-label="Popular comparisons"><p class="foot-h">Popular comparisons</p><ul class="cmp-links">${FEATURED.map((p) => `<li><a href="${root}compare/${p.slug}/">${esc(p.A.name)} vs ${esc(p.B.name)}</a></li>`).join('')}<li><a href="${root}compare/">All ${pairList.length} comparisons</a></li></ul></nav>
+    <nav aria-label="Popular comparisons"><p class="foot-h">Popular comparisons</p><ul class="cmp-links">${FEATURED.map((p) => `<li><a href="${root}compare/${p.slug}/">${esc(p.A.name)} vs ${esc(p.B.name)}</a></li>`).join('')}<li><a href="${root}compare/">All ${pairList.length} comparisons</a></li><li><a href="${root}crypto/">Crypto exchange fees</a></li></ul></nav>
   </section>`;
 }
 
@@ -921,6 +991,7 @@ w('assets/mini.js', miniSrc);
 w('cheapest-broker/index.html', cheapHub());
 CHEAP.forEach((c) => w(cheapUrl(c) + 'index.html', cheapPage(c)));
 w('compare/index.html', compareHub());
+w('crypto/index.html', cryptoPage());
 pairList.forEach((p) => w('compare/' + p.slug + '/index.html', vsPage(p)));
 w('404.html', notFound());
 w('about/index.html', aboutPage());
@@ -931,7 +1002,8 @@ w('robots.txt', `User-agent: *\nAllow: /\n\nSitemap: ${SITE_URL}sitemap.xml\n`);
 const lastRates = istDate(status.ratesUpdatedAt || status.ratesCheckedAt || new Date().toISOString());
 const urls = [[SITE_URL, pricesISO > lastRates ? pricesISO : lastRates, 'daily', '1.0'], [SITE_URL + 'how-we-calculate/', lastRates, 'weekly', '0.6'], [SITE_URL + 'about/', lastRates, 'monthly', '0.4']].concat(groups.map((g) => [SITE_URL + 'brokers/' + g.slug + '/', lastRates, 'weekly', '0.8']))
   .concat([[SITE_URL + 'cheapest-broker/', lastRates, 'weekly', '0.8']], CHEAP.map((c) => [SITE_URL + cheapUrl(c), lastRates, 'weekly', '0.8']))
-  .concat([[SITE_URL + 'compare/', lastRates, 'weekly', '0.7']], pairList.map((p) => [SITE_URL + 'compare/' + p.slug + '/', lastRates, 'weekly', '0.7']));
+  .concat([[SITE_URL + 'compare/', lastRates, 'weekly', '0.7']], pairList.map((p) => [SITE_URL + 'compare/' + p.slug + '/', lastRates, 'weekly', '0.7']))
+  .concat([[SITE_URL + 'crypto/', CRYPTO.checkedAt.slice(0, 10), 'weekly', '0.7']]);
 w('urls.txt', urls.map((u) => u[0]).join('\n') + '\n');
 w('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map(([u, d, f, p]) => `  <url><loc>${esc(u)}</loc><lastmod>${d}</lastmod><changefreq>${f}</changefreq><priority>${p}</priority></url>`).join('\n')}\n</urlset>\n`);
 w('manifest.webmanifest', JSON.stringify({ name: 'DalalScope brokerage calculator', short_name: BRAND, start_url: './', scope: './', display: 'standalone', background_color: '#061020', theme_color: '#061020', icons: [{ src: 'assets/icon-192.png', sizes: '192x192', type: 'image/png' }, { src: 'assets/icon-512.png', sizes: '512x512', type: 'image/png' }, { src: 'assets/icon-512-maskable.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' }] }, null, 1));

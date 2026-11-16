@@ -535,3 +535,6 @@ a.mark:hover small { color: var(--trace); }
 }
 .mc .table-scroll.one { max-width: 620px; }
 .plan .ex-t thead th:nth-child(2), .plan .ex-t thead th:nth-child(5) { text-align: left; }
+@media (max-width: 640px) {
+  .cx-t th:nth-child(3), .cx-t td:nth-child(3), .cx-t th:nth-child(5), .cx-t td:nth-child(5) { display: none; }
+}
