@@ -886,9 +886,9 @@ function cryptoPage() {
   const lead = `On a \u20B91 lakh buy and sell, published trading fees with GST run from ${inr(lo.fees)} at ${lo.e.name} to ${inr(hi.fees)} at ${hi.e.name} \u2014 and on top of that, every exchange must deduct 1% TDS (${inr(1000)}) when you sell, whichever you use. The TDS is not a fee: you claim it back against your income tax.`;
   const rows = big.map((r, i) => {
     const sm = small.find((x) => x.e === r.e);
-    return `<tr${i === 0 ? ' class="win"' : ''}><td class="num rk">${i + 1}</td><th scope="row">${esc(r.e.name)}<small>${esc(r.e.feeLabel)}</small></th><td class="num">${inr(sm.fees)}</td><td class="num"><b>${inr(r.fees)}</b></td><td class="num">${inr(r.tds)}</td><td class="num">${inr(r.total)}</td></tr>`;
+    return `<tr${i === 0 ? ' class="win"' : ''}><td class="num rk">${i + 1}</td><th scope="row">${esc(r.e.name)}<small>${esc(r.e.feeLabel)}</small></th><td class="num c-s">${inr(sm.fees)}</td><td class="num"><b>${inr(r.fees)}</b></td><td class="num c-s">${inr(r.tds)}</td><td class="num">${inr(r.total)}</td></tr>`;
   }).join('\n          ');
-  const unpubRows = unpub.map((e) => `<tr><td class="num rk">\u2014</td><th scope="row">${esc(e.name)}<small>${esc(e.feeLabel)}</small></th><td class="num" colspan="4">Fee shown on the order screen; part of the cost sits in the spread</td></tr>`).join('\n          ');
+  const unpubRows = unpub.map((e) => `<tr><td class="num rk">\u2014</td><th scope="row">${esc(e.name)}<small>${esc(e.feeLabel)}</small></th><td class="cx-note" colspan="4">Fee shown on the order screen; part of the cost sits in the spread</td></tr>`).join('\n          ');
   const cards = CRYPTO.list.map((e) => `<section class="panel" aria-labelledby="cx-${e.id}">
       <h2 id="cx-${e.id}">${esc(e.name)}</h2>
       <div class="table-scroll"><table class="ex-t gt"><tbody>
@@ -916,7 +916,7 @@ function cryptoPage() {
       <h2 id="cx-rank">What a round trip really deducts</h2>
       <p class="sub">One buy and one sell at the same price, market orders. \u201CFees + GST\u201D is what the exchange keeps; TDS is deducted on the sell and claimable against your income tax.</p>
       <div class="table-scroll"><table class="ex-t gt cx-t">
-        <thead><tr><th scope="col" class="num">#</th><th scope="col">Exchange and spot fee</th><th scope="col" class="num">Fees + GST on \u20B910,000</th><th scope="col" class="num">Fees + GST on \u20B91 lakh</th><th scope="col" class="num">TDS on the \u20B91 lakh sell</th><th scope="col" class="num">Total deducted</th></tr></thead>
+        <thead><tr><th scope="col" class="num">#</th><th scope="col">Exchange and spot fee</th><th scope="col" class="num c-s">Fees + GST on \u20B910,000</th><th scope="col" class="num">Fees + GST on \u20B91 lakh</th><th scope="col" class="num c-s">TDS on the \u20B91 lakh sell</th><th scope="col" class="num">Total deducted</th></tr></thead>
         <tbody>
           ${rows}
           ${unpubRows}

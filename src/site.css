@@ -536,5 +536,12 @@ a.mark:hover small { color: var(--trace); }
 .mc .table-scroll.one { max-width: 620px; }
 .plan .ex-t thead th:nth-child(2), .plan .ex-t thead th:nth-child(5) { text-align: left; }
 @media (max-width: 640px) {
-  .cx-t th:nth-child(3), .cx-t td:nth-child(3), .cx-t th:nth-child(5), .cx-t td:nth-child(5) { display: none; }
+  .cx-t .c-s { display: none; }
+  .ex-t.gt.cx-t thead th.num { white-space: normal; }
+  .cx-t th[scope="row"] { min-width: 0; }
+}
+.cx-t td.cx-note { text-align: left; white-space: normal; color: var(--dim); font-size: 0.82rem; }
+@media (max-width: 380px) {
+  .ex-t.gt.cx-t th, .ex-t.gt.cx-t td { padding: 8px 4px; }
+  .ex-t.gt.cx-t td b { font-size: 0.98rem; }
 }
