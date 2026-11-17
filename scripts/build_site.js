@@ -979,7 +979,31 @@ if (PREVIEW) {
   process.exit(0);
 }
 fs.rmSync(OUT, { recursive: true, force: true });
-const w = (rel, s) => { const f = path.join(OUT, rel); fs.mkdirSync(path.dirname(f), { recursive: true }); fs.writeFileSync(f, s); };
+/* announcement ribbon: site.config.json "announcement" {id, label, text, href, until}; drops itself after "until" (builds run every two hours) */
+const ANN = (() => {
+  const a = CONFIG.announcement;
+  if (!a || !a.text || !a.href) return null;
+  if (a.until && new Date().toISOString().slice(0, 10) > a.until) return null;
+  return a;
+})();
+function annRibbon(root, rel) {
+  if (!ANN || rel === ANN.href.replace(/\/?$/, '/') + 'index.html') return '';
+  const id = JSON.stringify(String(ANN.id || ANN.href));
+  return `<aside class="ann" id="ann" aria-label="Site update">
+  <a class="ann-a" href="${root}${ANN.href}"><span class="ann-tag">${esc(ANN.label || 'New')}</span><span class="ann-t">${esc(ANN.text)}<span class="ann-go" aria-hidden="true">\u2192</span></span></a>
+  <button type="button" class="ann-x" aria-label="Dismiss this update"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+</aside>
+<script>(function(){var a=document.getElementById('ann'),k='ds-ann',v=${id.replace(/</g, '\\u003c')};try{if(localStorage.getItem(k)===v){a.hidden=true;return}}catch(e){}a.querySelector('.ann-x').onclick=function(){a.hidden=true;try{localStorage.setItem(k,v)}catch(e){}}})();</script>`;
+}
+const w = (rel, s) => {
+  if (ANN && rel.endsWith('.html')) {
+    s = s.replace(/<body([^>]*)>/, (m, attrs) => {
+      const r = /data-root="([^"]*)"/.exec(attrs);
+      return m + '\n' + annRibbon(r ? r[1] : SITE_URL, rel);
+    });
+  }
+  const f = path.join(OUT, rel); fs.mkdirSync(path.dirname(f), { recursive: true }); fs.writeFileSync(f, s);
+};
 w('index.html', buildHome(false));
 w('assets/site.css', css);
 w('assets/app.js', appJs);

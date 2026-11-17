@@ -10,5 +10,12 @@
   "analytics": {
     "cloudflareToken": "e167bf92fc434a26a9673882fcda003a",
     "goatcounterCode": ""
+  },
+  "announcement": {
+    "id": "crypto-2026-11",
+    "label": "New update",
+    "text": "Now you can check crypto commission rates",
+    "href": "crypto/",
+    "until": "2026-12-17"
   }
 }
