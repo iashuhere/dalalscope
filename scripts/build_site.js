@@ -123,13 +123,19 @@ const THEME_TOGGLE = `<div class="theme" role="group" aria-label="Colour theme">
 const THEME_JS = "<script>(function(){var r=document.documentElement;function p(){var t=r.getAttribute('data-theme')==='light'?'light':'dark';document.getElementById('thLight').setAttribute('aria-pressed',t==='light');document.getElementById('thDark').setAttribute('aria-pressed',t==='dark')}function s(t){r.setAttribute('data-theme',t);try{localStorage.setItem('brc-theme',t)}catch(e){}p()}document.getElementById('thLight').onclick=function(){s('light')};document.getElementById('thDark').onclick=function(){s('dark')};p()})();</script>";
 const MARK_SVG = '<svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="10" fill="none" stroke="var(--trace)" stroke-width="1.6"/><path d="M16 2v7M16 23v7M2 16h7M23 16h7" stroke="var(--trace)" stroke-width="1.6"/><circle cx="16" cy="16" r="3" fill="var(--lock)"/></svg>';
 
-/* cookieless analytics: set a token in site.config.json and every page carries the tag; no cookies, so no consent banner */
+/* analytics: Cloudflare (cookieless) and, when googleTagId is set, Google Analytics 4 (sets first-party cookies) */
 function analyticsTags(preview) {
   const a = CONFIG.analytics || {};
   if (preview) return '';
   let t = '';
   if (a.cloudflareToken && /^[A-Za-z0-9]+$/.test(a.cloudflareToken)) t += `<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "${a.cloudflareToken}"}'></script>\n`;
   if (a.goatcounterCode && /^[a-z0-9-]+$/.test(a.goatcounterCode)) t += `<script data-goatcounter="https://${a.goatcounterCode}.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>\n`;
+  /* Google Analytics 4 via the Google tag Google issued for the stream (GTM-… container, or a plain G-… measurement ID).
+     The library is fetched after the page's load event so it never competes with the page itself. */
+  if (a.googleTagId && /^(GTM|GT|G)-[A-Z0-9]+$/.test(a.googleTagId)) {
+    const id = a.googleTagId, lib = id.startsWith('GTM-') ? 'gtm.js' : 'gtag/js';
+    t += `<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());${id.startsWith('G-') ? `gtag('config','${id}');` : ''}addEventListener('load',function(){var s=document.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/${lib}?id=${id}';document.head.appendChild(s)});</script>\n`;
+  }
   return t;
 }
 
