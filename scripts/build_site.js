@@ -294,6 +294,8 @@ function brokerPage(g) {
     { '@type': 'ListItem', position: 2, name: 'Rate cards', item: SITE_URL + '#rate-cards' },
     { '@type': 'ListItem', position: 3, name: g.name + ' brokerage charges', item: canonical },
   ] }];
+  const bqa = brokerQA(g);
+  jsonld.push(faqLD(bqa));
   const planBlocks = g.plans.map((b) => {
     const segRows = E.SEGS.map((s) => {
       const r = b.r[s];
@@ -333,6 +335,8 @@ function brokerPage(g) {
     </header>
     ${miniCalc(g.plans, `${g.name} brokerage calculator`)}
       ${planBlocks}
+    ${yearSection(g, root)}
+    ${faqBlock(bqa)}
     <section class="panel" aria-labelledby="cmp-h">
 ${vsWith.length ? `      <h2 id="cmp-h">${esc(g.name)} head to head</h2>
       <ul class="cmp-links">${vsWith.map((p) => `<li><a href="${root}compare/${p.slug}/">${esc(p.A.name)} vs ${esc(p.B.name)}</a></li>`).join('')}</ul>
@@ -566,6 +570,90 @@ const faqBlock = (qa) => `<section class="faq" aria-labelledby="gq-h"><div class
 ${qa.map(([q, a]) => `      <details class="panel"><summary><h3>${esc(q)}</h3></summary><p>${esc(a)}</p></details>`).join('\n')}
     </div></section>`;
 
+/* --- a year of trading: three typical activity levels, costed at every plan.
+   Trading costs only (brokerage, STT, GST, exchange and SEBI fees, stamp duty, DP on delivery sells); AMC is shown separately as published. --- */
+const ACTIVITY = [
+  { id: 'inv', name: 'Investor', who: 'an investor who buys and later sells ₹50,000 of shares four times a month', short: '4 delivery buys + sells of ₹50,000 a month', s: 'del', v: 50000, n: 4 },
+  { id: 'day', name: 'Intraday trader', who: 'an intraday trader doing 20 round trips of ₹1 lakh a month', short: '20 intraday round trips of ₹1 lakh a month', s: 'intra', v: 100000, n: 20 },
+  { id: 'opt', name: 'Options trader', who: 'an options trader buying and selling ₹10,000 of premium 40 times a month', short: '40 options round trips of ₹10,000 premium a month', s: 'opt', v: 10000, n: 40 },
+];
+const yearCost = (b, pr) => { const c = E.compute(b, pr.s, pr.v, pr.v, 1, 1); return c ? c.total * pr.n * 12 : null; };
+const YEAR_ROWS = {};
+ACTIVITY.forEach((pr) => { YEAR_ROWS[pr.id] = BROKERS.map((b) => ({ b, y: yearCost(b, pr) })).filter((r) => r.y != null).sort((a, z) => a.y - z.y); });
+const yearRankOf = (b, pr) => {
+  const rows = YEAR_ROWS[pr.id], r = rows.find((x) => x.b === b);
+  if (!r) return null;
+  return { y: r.y, pos: rows.filter((x) => x.y < r.y - 0.5).length + 1, of: rows.length, best: rows.filter((x) => x.y < rows[0].y + 0.5), gap: r.y - rows[0].y };
+};
+const inr0 = (n) => inr(Math.round(n), 0);
+const niceAmt = (v) => amt(v < 1e5 ? Math.round(v / 1000) * 1000 : v < 1e6 ? Math.round(v / 10000) * 10000 : Math.round(v / 1e5) * 1e5);
+const YEAR_NOTE = 'Trading costs only: brokerage, STT, GST, exchange and SEBI fees, stamp duty and the DP charge on delivery sells, for twelve months of the activity shown.';
+
+function yearSection(g, root) {
+  const b = g.plans[0];
+  const rows = ACTIVITY.map((pr) => {
+    const k = yearRankOf(b, pr);
+    if (!k) return `<tr class="na"><th scope="row">${pr.name}<small>${esc(pr.short)}</small></th><td colspan="3">Not offered</td></tr>`;
+    return `<tr><th scope="row">${pr.name}<small>${esc(pr.short)}</small></th><td class="num"><b>${inr0(k.y)}</b></td><td>${k.pos === 1 ? '<span class="best">Cheapest</span>' : ord(k.pos) + `<small>of ${k.of}</small>`}</td><td>${k.pos === 1 ? '—' : '+' + inr0(k.gap) + ' a year vs ' + planCell(k.best[0].b, root)}</td></tr>`;
+  }).join('\n          ');
+  const said = ACTIVITY.map((pr) => {
+    const k = yearRankOf(b, pr);
+    if (!k) return '';
+    return k.pos === 1 ? `For ${pr.who}, ${g.name} is the cheapest plan compared here, at ${inr0(k.y)} a year.`
+      : `${cap(pr.who)} pays ${inr0(k.y)} a year at ${g.name}, ${inr0(k.gap)} more than at ${namesOf(k.best, 2)}.`;
+  }).filter(Boolean).join(' ');
+  return `<section class="panel" aria-labelledby="yr-h">
+      <h2 id="yr-h">What a year at ${esc(g.name)} costs</h2>
+      <p>${esc(said)}</p>
+      <div class="table-scroll"><table class="ex-t gt yr-t">
+        <thead><tr><th scope="col">Activity${g.plans.length > 1 ? ` <small>${esc(b.plan)} plan</small>` : ''}</th><th scope="col" class="num">Cost a year</th><th scope="col">Rank</th><th scope="col">Cheapest plan</th></tr></thead>
+        <tbody>
+          ${rows}
+        </tbody>
+      </table></div>
+      <p class="fine">${YEAR_NOTE} Demat AMC is extra: ${esc(b.amc)}.${b.dp == null ? ` ${esc(g.name)} does not publish a DP charge on the plan page, so it is left out.` : ''}</p>
+    </section>`;
+}
+
+function brokerQA(g) {
+  const b = g.plans[0], qa = [], on = g.plans.length > 1 ? ` on its ${b.plan} plan` : '';
+  const seg = (s, label, example) => {
+    if (!b.r[s]) return;
+    const k = rankOf(b, s);
+    qa.push([`How much does ${g.name} charge for ${label}?`, `${g.name} charges ${ruleText(b.r[s])} brokerage on ${label}${on}. ${cap(example)}${example.includes(',') ? ',' : ''} costs ${inr(k.c.total)} in all at ${g.name}, including STT, GST, exchange fees, stamp duty${s === 'del' && b.dp != null ? ' and the DP charge' : ''}, which ranks ${ord(k.pos)} of ${k.of} plans compared on DalalScope.`]);
+  };
+  seg('del', 'equity delivery', TRADE_PHRASE.del);
+  seg('intra', 'intraday', TRADE_PHRASE.intra);
+  seg('opt', 'options', TRADE_PHRASE.opt);
+  const dps = BROKERS.filter((x) => x.dp != null).map((x) => x.dp), lo = Math.min(...dps), hi = Math.max(...dps);
+  qa.push([`What are ${g.name}’s DP charges?`, b.dp == null ? `${g.name} does not publish a DP charge on the plan page we check. Across the plans compared here, DP charges run from ${inr(lo)} to ${inr(hi)} per sell.`
+    : `${g.name} charges ${inr(b.dp)} including GST each time you sell shares out of your demat account. Across the ${dps.length} plans that publish one, DP charges run from ${inr(lo)} to ${inr(hi)} per sell.`]);
+  qa.push([`Does ${g.name} charge an annual demat AMC?`, `${g.name}’s published demat account maintenance charge${on}: ${b.amc}. It is charged on the demat account whether or not you trade.`]);
+  const k = rankOf(b, 'del');
+  if (k) qa.push([`Which broker is cheaper than ${g.name} for delivery?`, k.pos === 1 ? `None of the ${k.of} plans compared here; ${g.name} is the cheapest on ${TRADE_PHRASE.del}, at ${inr(k.c.total)}.`
+    : `On ${TRADE_PHRASE.del}, ${namesOf(tied(RANKS.del), 3)} ${isAre(tied(RANKS.del))} cheapest at ${inr(k.best.c.total)}, ${inr(k.gap)} less than ${g.name}. ${k.pos - 1} of ${k.of} plans cost less than ${g.name} on this trade.`]);
+  return qa;
+}
+
+/* where two plans swap places as a trade grows (percentage vs flat fees) */
+function crossover(a, b, s) {
+  const f = (v) => { const ca = E.compute(a, s, v, v, 1, 1), cb = E.compute(b, s, v, v, 1, 1); return ca && cb ? ca.total - cb.total : null; };
+  let pv = null, pd = null;
+  for (let v = 2000; v <= 5e6; v = Math.ceil(v * 1.08)) {
+    const d = f(v);
+    if (d == null) return null;
+    if (Math.abs(d) < 0.5) continue;
+    if (pd != null && Math.sign(d) !== Math.sign(pd)) {
+      let lo = pv, hi = v;
+      for (let i = 0; i < 40; i++) { const m = (lo + hi) / 2, dm = f(m); if (Math.abs(dm) >= 0.5 && Math.sign(dm) === Math.sign(pd)) lo = m; else hi = m; }
+      return { s, v: hi, small: pd < 0 ? a : b, large: pd < 0 ? b : a };
+    }
+    pd = d; pv = v;
+  }
+  return null;
+}
+const xoText = (x) => `On ${SEG_WORD[x.s]}, ${x.small.name} is cheaper on trades below about ${niceAmt(x.v)} and ${x.large.name} on larger ones${x.s === 'del' ? ' (DP charge included)' : ''}.`;
+
 /* --- cheapest broker by segment --- */
 const CHEAP = [
   { slug: 'delivery', segs: ['del'], name: 'delivery trading', tile: 'delivery', h1: 'Cheapest broker for delivery trading', title: 'Cheapest Broker for Delivery Trading in India',
@@ -730,6 +818,18 @@ function cheapHub() {
   const url = SITE_URL + 'cheapest-broker/';
   const tiles = CHEAP.map((c) => { const f = segFacts(c.segs[0]); return `<li><a class="g-tile panel" href="${root}${cheapUrl(c)}"><span class="g-k">Cheapest for ${esc(c.tile)}</span><b>${esc(namesOf(f.win, 2))}</b><span class="g-v">${inr(f.win[0].c.total)} on ${esc(SHORT_EX[f.s])}</span></a></li>`; }).join('');
   const rows = E.SEGS.map((s) => { const f = segFacts(s); return `<tr><th scope="row">${E.SEG_LABEL[s]}<small>${esc(cap(TRADE_PHRASE[s]))}</small></th><td>${esc(namesOf(f.win, 3))}</td><td class="num"><b>${inr(f.win[0].c.total)}</b></td><td>${esc(namesOf(f.lastG, 2))}</td><td class="num">${inr(f.last.c.total)}</td></tr>`; }).join('\n          ');
+  const zero = BROKERS.filter((b) => b.r.del && b.r.del.t === 'z').map((b) => ({ b, c: E.compute(b, 'del', 100000, 100000, 1, 1) }));
+  const zt = zero.map((r) => r.c.total), zdp = zero.filter((r) => r.b.dp != null).map((r) => r.b.dp);
+  const intraSmall = tied(ranked('intra', { v: 25000 })), intraBig = tied(ranked('intra', { v: 2500000 }));
+  const opt1 = tied(ranked('opt', { v: 10000, lots: 1 })), opt20 = tied(ranked('opt', { v: 100000, lots: 20 }));
+  const perLot = BROKERS.filter((b) => b.r.opt && b.r.opt.t === 'lot');
+  const same = (x, y) => x.length === y.length && x.every((r) => y.some((q) => q.b === r.b));
+  const moves = [
+    zero.length ? `${zero.length} of ${BROKERS.length} plans charge ₹0 brokerage on delivery, yet a ₹1 lakh buy and sell still costs between ${inr(Math.min(...zt))} and ${inr(Math.max(...zt))} at them, mostly because DP charges run from ${inr(Math.min(...zdp))} to ${inr(Math.max(...zdp))} per sell.` : '',
+    same(intraSmall, intraBig) ? `On intraday, ${namesOf(intraSmall, 3)} ${isAre(intraSmall)} cheapest on both a ₹25,000 and a ₹25 lakh trade.` : `On intraday, ${namesOf(intraSmall, 3)} ${isAre(intraSmall)} cheapest on a ₹25,000 trade, but ${namesOf(intraBig, 3)} on a ₹25 lakh trade, because percentage fees grow with the order while flat fees do not.`,
+    perLot.length ? `${perLot.length} plan${perLot.length > 1 ? 's charge' : ' charges'} options brokerage per lot rather than per order (${joinNames(perLot.map(fullName))}), which looks cheap on one lot and expensive on twenty.` : '',
+    same(opt1, opt20) ? `On options, ${namesOf(opt1, 3)} ${isAre(opt1)} cheapest on both a one-lot and a twenty-lot order.` : `On options, ${namesOf(opt1, 3)} ${isAre(opt1)} cheapest on a one-lot ₹10,000 premium order, and ${namesOf(opt20, 3)} on a twenty-lot ₹1 lakh order.`,
+  ].filter(Boolean);
   const body = `    <header class="bp-head">
       <h1>Cheapest broker in India, segment by segment</h1>
       <p class="lead">No broker is cheapest at everything. A plan that charges nothing on delivery can cost more on options, and a percentage-based plan that looks cheap on a small trade gets expensive on a big one. Each page below ranks all ${BROKERS.length} plans on real trades, with every tax and fee included.</p>
@@ -744,6 +844,10 @@ function cheapHub() {
           ${rows}
         </tbody>
       </table></div>
+    </section>
+    <section class="panel prose-s" aria-labelledby="hub-m">
+      <h2 id="hub-m">What changes the ranking</h2>
+      <ul class="notes">${moves.map((m) => `<li>${esc(m)}</li>`).join('')}</ul>
     </section>`;
   return guidePage({ title: `Cheapest Broker in India by Segment (${MONTH_YEAR}) | ${BRAND}`, desc: `The cheapest stock broker for delivery, intraday, F&O, commodity and currency trading, with all ${BROKERS.length} plans ranked on real trades including STT, GST and DP charges.`, canonical: url, root, body, crumbs: [['Cheapest brokers', null]], jsonld: [crumbsLD([['Cheapest brokers', url]])] });
 }
@@ -802,7 +906,17 @@ function vsPage(p) {
   const planNote = (b) => b.plan !== 'Standard' ? ` <small>${esc(b.plan)}</small>` : '';
   const aggNote = [a, b].filter((x) => x.src === 'agg').map((x) => `<p class="fine">${esc(x.name)} does not publish its full rate card, so its rates come from comparison sites. Confirm with ${esc(x.name)} before opening an account.</p>`).join('');
   const related = pairList.filter((x) => x !== p && (x.A === p.A || x.B === p.A || x.A === p.B || x.B === p.B));
+  const yr = ACTIVITY.map((pr) => { const ya = yearCost(a, pr), yb = yearCost(b, pr); return { pr, ya, yb, d: ya != null && yb != null ? ya - yb : null }; });
+  const yrSaid = yr.filter((r) => r.d != null).map((r) => Math.abs(r.d) < 100 ? `For ${r.pr.who}, the two cost about the same over a year (${Math.round(r.ya) === Math.round(r.yb) ? inr0(r.ya) + ' each' : inr0(r.ya) + ' vs ' + inr0(r.yb)}).`
+    : `For ${r.pr.who}, ${r.d < 0 ? A : B} costs ${inr0(Math.abs(r.d))} less a year (${inr0(Math.min(r.ya, r.yb))} against ${inr0(Math.max(r.ya, r.yb))}).`).join(' ');
+  const yrRows = yr.map((r) => `<tr><th scope="row">${r.pr.name}<small>${esc(r.pr.short)}</small></th><td class="num">${r.ya != null ? inr0(r.ya) : 'Not offered'}</td><td class="num">${r.yb != null ? inr0(r.yb) : 'Not offered'}</td><td>${r.d == null ? '—' : Math.abs(r.d) < 100 ? 'About the same' : `<span class="best">${esc(r.d < 0 ? A : B)}</span> by ${inr0(Math.abs(r.d))}`}</td></tr>`).join('\n          ');
+  const xos = ['del', 'intra', 'fut'].map((sg) => crossover(a, b, sg)).filter(Boolean);
   const qa = [[`Which is cheaper, ${A} or ${B}?`, F.verdict + ` Rates checked ${RATES_DATE}.`]];
+  if (yrSaid) qa.push([`Which is cheaper over a year of trading, ${A} or ${B}?`, yrSaid + ' ' + YEAR_NOTE]);
+  if (xos.length) qa.push([`Does the cheaper broker change with trade size?`, xos.map(xoText).join(' ') + ' Flat-fee plans cost the same at any size, while percentage plans grow with the trade.']);
+  else qa.push([`Does the cheaper broker change with trade size?`, `Not between ${A} and ${B}: across trade sizes from ₹2,000 to ₹50 lakh, the cheaper of the two stays the same in delivery, intraday and futures (or they cost the same).`]);
+  const amcQ = [`What do ${A} and ${B} charge for DP and demat AMC?`, `${A}: ${a.dp == null ? 'DP charge not published' : inr(a.dp) + ' DP charge per sell'}, AMC ${a.amc}. ${B}: ${b.dp == null ? 'DP charge not published' : inr(b.dp) + ' DP charge per sell'}, AMC ${b.amc}.`];
+  qa.push(amcQ);
   const desc = (F.verdict.split('. ')[0].replace(/\.$/, '') + `. Compare ${A} and ${B} brokerage, DP and AMC side by side, with real trade costs including STT and GST.`);
   const body = `    <header class="bp-head">
       <h1>${esc(A)} vs ${esc(B)}: which is cheaper?</h1>
@@ -820,9 +934,21 @@ function vsPage(p) {
       </table></div>
     </section>
     ${miniCalc([a, b], `${A} vs ${B} on your own trade`)}
+    <section class="panel" aria-labelledby="vs-yr">
+      <h2 id="vs-yr">A year of trading at ${esc(A)} and ${esc(B)}</h2>
+      <p>${esc(yrSaid)}</p>
+      <div class="table-scroll"><table class="ex-t gt yr-t">
+        <thead><tr><th scope="col">Activity</th><th scope="col" class="num">${esc(A)}${planNote(a)}</th><th scope="col" class="num">${esc(B)}${planNote(b)}</th><th scope="col">Cheaper</th></tr></thead>
+        <tbody>
+          ${yrRows}
+        </tbody>
+      </table></div>
+      <p class="fine">${YEAR_NOTE} Demat AMC is extra.</p>
+    </section>
     <section class="panel" aria-labelledby="vs-size">
       <h2 id="vs-size">Small and large trades</h2>
       <p class="sub">Flat-fee plans cost the same at any size; percentage and per-lot plans grow with the trade.</p>
+      ${xos.length ? `<p class="xo">${esc(xos.map(xoText).join(' '))}</p>` : ''}
       <div class="table-scroll"><table class="ex-t gt">
         <thead><tr><th scope="col">Trade</th><th scope="col" class="num">${esc(A)}</th><th scope="col" class="num">${esc(B)}</th><th scope="col">Cheaper</th></tr></thead>
         <tbody>
@@ -863,6 +989,10 @@ function compareHub() {
   const url = SITE_URL + 'compare/';
   const by = [];
   pairList.forEach((p) => { let g = by.find((x) => x.g === p.A); if (!g) { g = { g: p.A, items: [] }; by.push(g); } g.items.push(p); });
+  const cell = (F, sg) => { const r = F.rows.find((x) => x.s === sg); return r.d == null ? 'Not offered by both' : Math.abs(r.d) < TIE ? 'About the same' : `${esc(r.d < 0 ? F.pA : F.pB)} by ${inr(Math.abs(r.d))}`; };
+  const topRows = FEATURED.map((p) => { const F = Object.assign(vsFacts(p), { pA: p.A.name, pB: p.B.name }); return `<tr><th scope="row"><a href="${root}compare/${p.slug}/">${esc(p.A.name)} vs ${esc(p.B.name)}</a></th><td>${cell(F, 'del')}</td><td>${cell(F, 'intra')}</td><td>${cell(F, 'opt')}</td></tr>`; }).join('\n          ');
+  const splits = pairList.filter((p) => { const F = vsFacts(p), d = F.rows.find((x) => x.s === 'del').d, o = F.rows.find((x) => x.s === 'opt').d; return d != null && o != null && Math.abs(d) >= TIE && Math.abs(o) >= TIE && Math.sign(d) !== Math.sign(o); });
+  const splitSaid = splits.length ? `In ${splits.length} of these ${pairList.length} match-ups, the broker that is cheaper for delivery is the more expensive one for options, which is why every comparison goes segment by segment.` : `Every comparison goes segment by segment, because a broker that is cheap on one kind of trade is not always cheap on another.`;
   const blocks = by.map((x) => `<section class="panel" aria-labelledby="cg-${x.g.slug}"><h2 id="cg-${x.g.slug}">${esc(x.g.name)} compared</h2><ul class="cmp-links">${x.items.map((p) => `<li><a href="${root}compare/${p.slug}/">${esc(p.A.name)} vs ${esc(p.B.name)}</a></li>`).join('')}</ul></section>`).join('\n    ');
   const body = `    <header class="bp-head">
       <h1>Compare brokers head to head</h1>
@@ -870,6 +1000,16 @@ function compareHub() {
       <p class="checked">Broker rates checked ${RATES_DATE}.</p>
       <a class="cta" href="${root}#calculator">Rank all ${BROKERS.length} plans for any NSE stock</a>
     </header>
+    <section class="panel" aria-labelledby="cg-top">
+      <h2 id="cg-top">The most-searched match-ups at a glance</h2>
+      <p>${esc(splitSaid)}</p>
+      <div class="table-scroll"><table class="ex-t gt">
+        <thead><tr><th scope="col">Comparison</th><th scope="col">Delivery <small>₹1 lakh buy + sell</small></th><th scope="col">Intraday <small>₹1 lakh buy + sell</small></th><th scope="col">Options <small>₹10,000 premium</small></th></tr></thead>
+        <tbody>
+          ${topRows}
+        </tbody>
+      </table></div>
+    </section>
     ${blocks}`;
   return guidePage({ title: `Compare Indian Stock Brokers Head to Head (${YEAR}) | ${BRAND}`, desc: `${pairList.length} broker comparisons, including Zerodha vs Groww, Angel One vs Upstox and Dhan vs Zerodha: brokerage, DP and AMC side by side with real trade costs.`, canonical: url, root, body, crumbs: [['Compare brokers', null]], jsonld: [crumbsLD([['Compare brokers', url]])] });
 }

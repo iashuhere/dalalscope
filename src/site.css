@@ -595,3 +595,13 @@ a.mark:hover small { color: var(--trace); }
 @media (max-width: 380px) {
   .ann-go { display: none; }
 }
+.xo { margin: 0 0 12px; }
+@media (max-width: 640px) {
+  .yr-t th small { display: block; }
+  .ex-t.gt.yr-t thead th.num, .ex-t.gt.yr-t td.num { white-space: normal; }
+  .ex-t.gt.yr-t th, .ex-t.gt.yr-t td { padding: 8px 4px; }
+  .yr-t .best { padding-inline: 4px; letter-spacing: 0; }
+  .ex-t.gt.yr-t tbody th { font-size: 0.92rem; }
+  .ex-t.gt.yr-t { font-size: 0.8rem; }
+  .ex-t.gt.yr-t td b { font-size: 0.95rem; }
+}
