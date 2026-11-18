@@ -1,6 +1,17 @@
 {
- "updatedAt": "2026-11-13T05:12:26Z",
+ "updatedAt": "2026-11-18T04:12:01Z",
  "items": [
+  {
+   "id": "2026-11-17-sebi-mtf-free-float-limits",
+   "d": "2026-11-17",
+   "who": "SEBI",
+   "tag": "Rule change",
+   "title": "SEBI weighs stock-wise limits on margin trading funding",
+   "body": "Per a Reuters report, SEBI is considering barring fresh MTF positions in a stock once margin-funded holdings reach about 5-10% of its free float. MTF exposure is a record ₹1.53 lakh crore. Nothing is final; a consultation paper is expected first.",
+   "srcName": "Business Today",
+   "srcUrl": "https://www.businesstoday.in/markets/trending-stocks/story/sebi-mulls-limits-on-margin-trading-as-retail-leverage-hits-rs-1-53-lakh-crore-says-report-567824-2026-11-17",
+   "addedAt": "2026-11-18T04:12:01Z"
+  },
   {
    "id": "2026-11-13-sahi-commodity-futures-flat-fee",
    "d": "2026-11-13",
