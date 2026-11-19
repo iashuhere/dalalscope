@@ -139,7 +139,7 @@ function analyticsTags(preview) {
   return t;
 }
 
-function head({ title, desc, canonical, root, jsonld, preview }) {
+function head({ title, desc, canonical, root, jsonld, preview, noindex }) {
   const ogImage = SITE_URL + 'assets/og.png';
   const styles = preview ? `<style>${css}</style>` : `<link rel="stylesheet" href="${root}assets/site.css?v=${CSS_V}">`;
   const icons = preview ? `<link rel="icon" href="data:image/svg+xml,${encodeURIComponent(read(path.join(ROOT, 'assets/favicon.svg')))}">`
@@ -152,7 +152,7 @@ function head({ title, desc, canonical, root, jsonld, preview }) {
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(desc)}">
 <link rel="canonical" href="${esc(canonical)}">
-<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="robots" content="${noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large'}">
 <meta property="og:site_name" content="${BRAND}">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="en_IN">
@@ -238,7 +238,12 @@ const PROFILES = ['https://x.com/iashuhere', 'https://www.quora.com/profile/Asho
 const ORG_PROFILES = ['https://x.com/dalalscope', 'https://www.linkedin.com/company/dalalscope/', 'https://www.facebook.com/profile.php?id=61596207647602'];
 const PERSON_LD = CONFIG.owner ? { '@context': 'https://schema.org', '@type': 'Person', '@id': SITE_URL + '#owner', name: CONFIG.owner, description: CONFIG.ownerNote || undefined, url: SITE_URL + 'about/', sameAs: PROFILES } : null;
 const ORG_LD = { '@context': 'https://schema.org', '@type': 'Organization', '@id': SITE_URL + '#org', name: BRAND, url: SITE_URL, logo: SITE_URL + 'assets/icon-512.png', description: 'Independent brokerage cost comparison for Indian stock traders.', email: CONFIG.contactEmail || undefined, founder: CONFIG.owner ? { '@type': 'Person', name: CONFIG.owner, url: SITE_URL + 'about/' } : undefined, sameAs: ORG_PROFILES.concat(REPO_URL ? [REPO_URL] : []).concat(PROFILES) };
-const articleLD = (headline, url, datePublished) => ({ '@context': 'https://schema.org', '@type': 'Article', headline, mainEntityOfPage: url, datePublished, dateModified: status.ratesCheckedAt || status.ratesUpdatedAt || datePublished, inLanguage: 'en-IN', author: CONFIG.owner ? { '@type': 'Person', name: CONFIG.owner, url: SITE_URL + 'about/' } : { '@id': SITE_URL + '#org' }, publisher: { '@id': SITE_URL + '#org' } });
+/* dateModified is the last real rate change, not the daily check, so search engines see honest freshness */
+const articleLD = (headline, url, datePublished) => ({ '@context': 'https://schema.org', '@type': 'Article', headline, mainEntityOfPage: url, datePublished, dateModified: status.ratesUpdatedAt || status.ratesCheckedAt || datePublished, inLanguage: 'en-IN', author: CONFIG.owner ? { '@type': 'Person', name: CONFIG.owner, url: SITE_URL + 'about/' } : { '@id': SITE_URL + '#org' }, publisher: { '@id': SITE_URL + '#org' } });
+
+/* visible byline: who compiled the page and where its rates come from (E-E-A-T for a finance site) */
+const byline = (root, rest) => `<p class="checked byline">${CONFIG.owner ? `By <a href="${root}about/" rel="author">${esc(CONFIG.owner)}</a> · ` : ''}${rest}.</p>`;
+const srcLinks = (b) => b.links.map((l) => `<a href="${esc(l[1])}" target="_blank" rel="noopener">${esc(l[0])}</a>`).join(', ');
 
 function buildHome(preview) {
   const root = '';
@@ -286,9 +291,9 @@ function brokerPage(g) {
   const p0 = g.plans[0];
   const title = `${g.name} Brokerage Calculator & Charges ${YEAR} | ${BRAND}`;
   const desc = `${g.name} charges ${shortRule(p0.r.del)} on delivery, ${shortRule(p0.r.intra)} on intraday and ${shortRule(p0.r.opt)} on options${g.plans.length > 1 ? ' on its default plan' : ''}. See DP, AMC and what a typical trade really costs with STT and GST.`;
-  const others = groups.filter((x) => x !== g);
+  const others = nearestGroups(g, 6);
   const vsWith = pairList.filter((p) => p.A === g || p.B === g);
-  const jsonld = [{ '@context': 'https://schema.org', '@type': 'WebPage', name: g.name + ' brokerage calculator and charges', url: canonical, dateModified: status.ratesCheckedAt || status.ratesUpdatedAt, inLanguage: 'en-IN', publisher: { '@id': SITE_URL + '#org' } },
+  const jsonld = [Object.assign(articleLD(g.name + ' brokerage charges and calculator', canonical, trackedSince(g)), { about: { '@type': 'Organization', name: g.name, url: p0.links[0] ? p0.links[0][1] : undefined } }),
   { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
     { '@type': 'ListItem', position: 1, name: BRAND, item: SITE_URL },
     { '@type': 'ListItem', position: 2, name: 'Rate cards', item: SITE_URL + '#rate-cards' },
@@ -330,18 +335,22 @@ function brokerPage(g) {
     <header class="bp-head">
       <h1>${esc(g.name)} brokerage charges and calculator</h1>
       <p class="lead">${lead}</p>
-      <p class="checked">Checked ${RATES_DATE}. Totals include 18% GST, STT, exchange and SEBI fees, stamp duty and the DP charge on delivery sells.</p>
+      ${byline(root, `Rates checked ${RATES_DATE} against ${srcLinks(p0)}${p0.src === 'agg' ? ' (comparison site)' : ''}`)}
+      <p class="checked">Totals include 18% GST, STT, exchange and SEBI fees, stamp duty and the DP charge on delivery sells.</p>
       <a class="cta" href="${root}#calculator">Check any NSE stock in the calculator</a>
     </header>
     ${miniCalc(g.plans, `${g.name} brokerage calculator`)}
       ${planBlocks}
+    ${brokerProfile(g, root)}
+    ${stockExample(g, groups.indexOf(g))}
     ${yearSection(g, root)}
+    ${brokerHistory(g, root)}
     ${faqBlock(bqa)}
     <section class="panel" aria-labelledby="cmp-h">
 ${vsWith.length ? `      <h2 id="cmp-h">${esc(g.name)} head to head</h2>
       <ul class="cmp-links">${vsWith.map((p) => `<li><a href="${root}compare/${p.slug}/">${esc(p.A.name)} vs ${esc(p.B.name)}</a></li>`).join('')}</ul>
-      <h2 class="h-gap">Other brokers’ charges</h2>` : `      <h2 id="cmp-h">Other brokers’ charges</h2>`}
-      <ul class="cmp-links">${others.map((o) => `<li><a href="${root}brokers/${o.slug}/">${esc(o.name)}</a></li>`).join('')}</ul>
+      <h2 class="h-gap">Brokers priced closest to ${esc(g.name)}</h2>` : `      <h2 id="cmp-h">Brokers priced closest to ${esc(g.name)}</h2>`}
+      <ul class="cmp-links">${others.map((o) => `<li><a href="${root}brokers/${o.slug}/">${esc(o.name)}</a></li>`).join('')}<li><a href="${root}#rate-cards">All ${BROKERS.length} plans</a></li></ul>
       <h2 class="h-gap">Cheapest broker by segment</h2>
       <ul class="cmp-links">${CHEAP.map((c) => `<li><a href="${root}${cheapUrl(c)}">${esc(cap(c.name))}</a></li>`).join('')}</ul>
     </section>
@@ -547,9 +556,9 @@ function miniCalc(plans, title) {
     </section>`;
 }
 
-function guidePage({ title, desc, canonical, root, jsonld, crumbs, body, calc }) {
+function guidePage({ title, desc, canonical, root, jsonld, crumbs, body, calc, noindex }) {
   const trail = crumbs.map(([n, href]) => href ? `<li><a href="${href}">${esc(n)}</a></li>` : `<li aria-current="page">${esc(n)}</li>`).join('');
-  return head({ title, desc, canonical, root, jsonld }) + `<body data-root="${root}">
+  return head({ title, desc, canonical, root, jsonld, noindex }) + `<body data-root="${root}">
 <div class="wrap page">
   ${topBar(root, true)}
   <nav class="crumbs" aria-label="Breadcrumb"><ol><li><a href="${root}">DalalScope</a></li>${trail}</ol></nav>
@@ -653,6 +662,143 @@ function crossover(a, b, s) {
   return null;
 }
 const xoText = (x) => `On ${SEG_WORD[x.s]}, ${x.small.name} is cheaper on trades below about ${niceAmt(x.v)} and ${x.large.name} on larger ones${x.s === 'del' ? ' (DP charge included)' : ''}.`;
+
+/* ---------- what is specific to one broker, worked out from its own rate card ---------- */
+const STOCK_ROWS = E.parseStocks(fullStocks ? fullStocks.data : '');
+const LAUNCH_AT = (changeLog.items || []).length ? changeLog.items[changeLog.items.length - 1].at : null;
+/* each broker page works through a different large-cap stock, so every page carries its own worked numbers */
+const STOCK_ROTA = ['RELIANCE', 'HDFCBANK', 'ICICIBANK', 'INFY', 'TCS', 'SBIN', 'ITC', 'BHARTIARTL', 'LT', 'AXISBANK', 'KOTAKBANK', 'HINDUNILVR', 'MARUTI', 'SUNPHARMA', 'TITAN', 'NTPC', 'TATASTEEL', 'BAJFINANCE', 'HCLTECH', 'ASIANPAINT', 'WIPRO', 'COALINDIA', 'POWERGRID', 'ONGC', 'BEL'];
+const rankWord = (k) => (k.pos === 1 ? 'cheapest' : k.pos === k.of ? 'costliest' : ord(k.pos)) + ' of ' + k.of;
+const segRankText = (x) => SEG_WORD[x.s] + ' (' + rankWord(x.k) + ')';
+
+/* other brokers whose year-of-trading costs sit closest to this one's, across the three activity profiles */
+function nearestGroups(g, n) {
+  const vec = (b) => ACTIVITY.map((pr) => yearCost(b, pr));
+  const mine = vec(g.plans[0]);
+  return groups.filter((x) => x !== g).map((x) => {
+    const v = vec(x.plans[0]);
+    const d = mine.reduce((s, y, i) => s + (y == null || v[i] == null ? (y == null && v[i] == null ? 0 : 2) : Math.abs(y - v[i]) / Math.max(y, v[i], 1)), 0);
+    return { g: x, d };
+  }).sort((a, z) => a.d - z.d).slice(0, n).map((x) => x.g);
+}
+const pairOf = (g1, g2) => pairList.find((p) => (p.A === g1 && p.B === g2) || (p.A === g2 && p.B === g1));
+
+function brokerProfile(g, root) {
+  const b = g.plans[0], name = g.name, on = g.plans.length > 1 ? ` on its ${b.plan} plan` : '';
+  const pts = [];
+  if (b.r.del) {
+    if (b.r.del.t === 'z') {
+      const nZero = BROKERS.filter((x) => x.r.del && x.r.del.t === 'z').length;
+      pts.push(`${name} is one of ${nZero} plans here with ₹0 delivery brokerage${on}. On a delivery trade the only charge it sets itself is ${b.dp == null ? 'a DP charge on each sell, which it does not publish on the page we check' : `the ${inr(b.dp)} DP charge each time you sell a stock`}; everything else is tax and exchange fees that every broker passes on.`);
+    } else if (b.r.del.t === 'p') {
+      const c = E.compute(b, 'del', 500000, 500000, 1, 1);
+      pts.push(`${name} charges ${pct(b.r.del.p)} of the trade value on delivery${on}, so brokerage grows with the order: on ₹5 lakh bought and sold it is ${inr(c.brok)} before GST, where a zero-brokerage plan charges nothing.`);
+    } else {
+      const c1 = E.compute(b, 'del', 10000, 10000, 1, 1), c2 = E.compute(b, 'del', 500000, 500000, 1, 1);
+      pts.push(`${name} charges ${ruleText(b.r.del)} on delivery${on}: ${inr(c1.brok)} in brokerage on a ₹10,000 buy and sell, and ${inr(c2.brok)} on ₹5 lakh.`);
+    }
+  }
+  if (b.r.opt) {
+    const big = SIZES.opt[SIZES.opt.length - 1], c = E.compute(b, 'opt', big.v, big.v, 1, big.lots);
+    if (b.r.opt.t === 'lot') pts.push(`On options it charges ${ruleText(b.r.opt)} rather than per order, so a ${big.lots}-lot order with ${amt(big.v)} of premium costs ${inr(c.brok)} in brokerage to buy and sell.`);
+    else if (b.r.opt.t === 'f') {
+      const same = BROKERS.filter((x) => x !== b && x.r.opt && x.r.opt.t === 'f' && x.r.opt.a === b.r.opt.a).length;
+      pts.push(`On options it charges a flat ${ruleText(b.r.opt)} however many lots the order holds${same ? `, the same as ${same} other plan${same > 1 ? 's' : ''} here` : ''}.`);
+    } else if (b.r.opt.t === 'z') pts.push('It charges no brokerage on options orders.');
+    else pts.push(`On options it charges ${ruleText(b.r.opt)}: ${inr(c.brok)} in brokerage on a ${big.lots}-lot order with ${amt(big.v)} of premium, bought and sold.`);
+  } else pts.push((b.unl || []).includes('opt') ? `${name} offers equity options but does not publish the brokerage on the page we check.` : `${name} does not offer equity options.`);
+  const segs = E.SEGS.filter((s) => b.r[s]).map((s) => ({ s, k: rankOf(b, s) })).filter((x) => x.k);
+  const strong = segs.filter((x) => x.k.pos <= 3), weak = segs.filter((x) => x.k.pos > 3 && x.k.pos > Math.ceil(x.k.of * 2 / 3));
+  const mid = segs.filter((x) => !strong.includes(x) && !weak.includes(x));
+  const rk = [];
+  if (strong.length) rk.push(`ranks near the top for ${joinNames(strong.map(segRankText))}`);
+  if (mid.length && (strong.length || weak.length)) rk.push(`sits mid-table for ${joinNames(mid.map(segRankText))}`);
+  if (weak.length) rk.push(`is among the costlier plans for ${joinNames(weak.map(segRankText))}`);
+  pts.push(rk.length ? `On a typical trade in each segment, ${name} ${joinNames(rk)}.` : `On a typical trade in each segment, ${name} is mid-table: ${joinNames(mid.map(segRankText))}.`);
+  const fits = ACTIVITY.map((pr) => ({ pr, k: yearRankOf(b, pr) })).filter((x) => x.k).sort((a, z) => a.k.pos / a.k.of - z.k.pos / z.k.of);
+  if (fits.length > 1) {
+    const bf = fits[0], wf = fits[fits.length - 1];
+    if (bf.k.pos / bf.k.of !== wf.k.pos / wf.k.of) pts.push(`Of the three trading patterns costed over a year below, its best rank is for ${bf.pr.who} (${rankWord(bf.k)}, ${inr0(bf.k.y)} a year) and its weakest for ${wf.pr.who} (${rankWord(wf.k)}).`);
+  }
+  const near = nearestGroups(g, 1)[0];
+  if (near) {
+    const r = near.plans[0];
+    const xs = ['del', 'intra', 'fut'].map((s) => crossover(b, r, s)).filter(Boolean);
+    const gaps = ACTIVITY.map((pr) => ({ pr, a: yearCost(b, pr), z: yearCost(r, pr) })).filter((x) => x.a != null && x.z != null).map((x) => Object.assign(x, { d: x.a - x.z })).sort((p, q) => Math.abs(q.d) - Math.abs(p.d));
+    const pr = pairOf(g, near);
+    let t = `The broker priced closest to ${name} is <a href="${root}brokers/${near.slug}/">${esc(fullName(r))}</a>. `;
+    t += xs.length ? esc(xs.map(xoText).join(' ')) + ' ' : '';
+    t += gaps.length && Math.abs(gaps[0].d) >= 100 ? esc(`The biggest gap between them is for ${gaps[0].pr.who}: ${gaps[0].d < 0 ? name : near.name} costs ${inr0(Math.abs(gaps[0].d))} less a year.`) : gaps.length ? esc(`For all three trading patterns, the two come within ₹100 a year of each other.`) : '';
+    if (pr) t += ` <a href="${root}compare/${pr.slug}/">${esc(pr.A.name)} vs ${esc(pr.B.name)} in full</a>.`;
+    pts.push({ html: t });
+  }
+  return `<section class="panel" aria-labelledby="pf-h">
+      <h2 id="pf-h">Where ${esc(name)} is cheap, and where it isn’t</h2>
+      <ul class="insights">${pts.map((t) => `<li>${typeof t === 'string' ? esc(t) : t.html}</li>`).join('')}</ul>
+    </section>`;
+}
+
+/* a delivery trade in a real stock at the latest close, line by line, against the cheapest other broker */
+function stockExample(g, idx) {
+  const b = g.plans[0];
+  if (!b.r.del) return '';
+  const st = STOCK_ROWS.find((x) => x.s === STOCK_ROTA[idx % STOCK_ROTA.length]);
+  if (!st || !(st.p > 0)) return '';
+  const raw = 150000 / st.p;
+  const qty = raw >= 100 ? Math.round(raw / 10) * 10 : raw >= 10 ? Math.round(raw / 5) * 5 : Math.max(1, Math.round(raw));
+  const v = qty * st.p;
+  const rows = ranked('del', { v });
+  const mine = rows.find((r) => r.b === b), others = rows.filter((r) => groupOf(r.b) !== g);
+  if (!mine || !others.length) return '';
+  const rival = others[0], best = mine.c.total <= rival.c.total + 0.005, gap = Math.abs(mine.c.total - rival.c.total);
+  const taxShare = Math.round(mine.c.statutory / mine.c.total * 100);
+  const said = `Buying and then selling ${qty} ${st.s} shares for delivery at the ${PRICES_DATE} NSE close of ${inr(st.p)} is ${inr(v, 0)} each way. At ${g.name} the round trip costs ${inr(mine.c.total)}, and ${taxShare}% of that is tax and exchange fees that no broker can change. `
+    + (best ? `That makes ${g.name} the cheapest of the ${rows.length} plans on this trade, ${inr(gap)} less than ${fullName(rival.b)}.`
+      : `${fullName(rival.b)} is the cheapest broker on this trade at ${inr(rival.c.total)}; ${g.name} costs ${inr(gap)} more, and the table shows which line items make up the difference.`);
+  const line = (label, f) => `<tr><th scope="row">${label}</th><td class="num">${inr(f(mine.c))}</td><td class="num">${inr(f(rival.c))}</td></tr>`;
+  return `<section class="panel" aria-labelledby="ex-h">
+      <h2 id="ex-h">A real trade at ${esc(g.name)}: ${qty} ${esc(st.s)} shares</h2>
+      <p>${esc(said)}</p>
+      <div class="table-scroll"><table class="ex-t gt">
+        <thead><tr><th scope="col">Line item</th><th scope="col" class="num">${esc(fullName(b))}</th><th scope="col" class="num">${esc(fullName(rival.b))} <small>(${best ? 'next cheapest' : 'cheapest'})</small></th></tr></thead>
+        <tbody>
+          ${line('Commission (both orders)', (c) => c.brok)}
+          ${line('GST on commission (18%)', (c) => c.gstBrok)}
+          ${line('DP charge on the sell', (c) => c.dp)}
+          ${line('STT (0.1% each side)', (c) => c.stt)}
+          ${line('Exchange and SEBI fees', (c) => c.txn)}
+          ${line('GST on exchange and SEBI fees', (c) => c.gstOther)}
+          ${line('Stamp duty (buy side)', (c) => c.stamp)}
+          <tr class="tot-row"><th scope="row">Total you pay</th><td class="num"><b>${inr(mine.c.total)}</b></td><td class="num"><b>${inr(rival.c.total)}</b></td></tr>
+        </tbody>
+      </table></div>
+      ${mine.c.dpMissing || rival.c.dpMissing ? `<p class="fine">${esc(joinNames([mine, rival].filter((r) => r.c.dpMissing).map((r) => r.b.name)))} does not publish a DP charge, so it is left out; the real cost is higher by that fee.</p>` : ''}
+    </section>`;
+}
+
+/* tracked-since date, logged rate changes and recent news for one broker */
+function brokerHistory(g, root) {
+  const items = changeLog.items || [];
+  const mentions = items.filter((it) => it.changes.some((c) => c.includes(g.name)));
+  const added = mentions.find((it) => it.changes.some((c) => /^Added /.test(c) && c.includes(g.name)));
+  const sinceAt = added ? added.at : LAUNCH_AT;
+  const changes = mentions.filter((it) => it !== added).map((it) => ({ at: it.at, list: it.changes.filter((c) => c.includes(g.name)) }));
+  const ids = new Set(g.plans.map((p) => p.news).filter(Boolean));
+  const news = (newsDoc.items || []).filter((n) => ids.has(n.who)).slice(0, 4);
+  const since = sinceAt ? fmtISODate(istDate(sinceAt)) : null;
+  const intro = changes.length
+    ? `DalalScope has tracked ${g.name}’s published rates since ${since} and logged ${changes.length === 1 ? 'one change' : changes.length + ' changes'}.`
+    : `No change to ${g.name}’s published rates since DalalScope started tracking them${since ? ` on ${since}` : ''}.`;
+  return `<section class="panel prose-s" aria-labelledby="hi-h">
+      <h2 id="hi-h">${esc(g.name)} rate changes and news</h2>
+      <p>${esc(intro)}</p>
+      ${changes.length ? `<ul class="notes">${changes.map((c) => `<li><time datetime="${esc(c.at)}">${fmtISODate(istDate(c.at))}</time>: ${esc(c.list.join('; '))}</li>`).join('')}</ul>` : ''}
+      <p>The rate card is re-checked against ${esc(g.name)}’s own charges page every day; every change on any broker is listed on <a href="${root}how-we-calculate/#changes">How we calculate</a>.</p>
+      ${news.length ? `<h3>Recent ${esc(g.name)} news</h3>
+      <ul class="notes">${news.map((n) => `<li><time datetime="${esc(n.d)}">${fmtISODate(n.d)}</time>: <b>${esc(n.title)}.</b> ${esc(n.body)} <a href="${esc(n.srcUrl)}" target="_blank" rel="noopener">${esc(n.srcName)}</a></li>`).join('')}</ul>` : ''}
+    </section>`;
+}
+const trackedSince = (g) => { const it = (changeLog.items || []).find((x) => x.changes.some((c) => /^Added /.test(c) && c.includes(g.name))); const at = it ? it.at : LAUNCH_AT; return at ? istDate(at) : '2026-10-26'; };
 
 /* --- cheapest broker by segment --- */
 const CHEAP = [
@@ -796,7 +942,7 @@ function cheapPage(cfg) {
   const body = `    <header class="bp-head">
       <h1>${esc(cfg.h1)}</h1>
       <p class="lead">${esc(facts.map((f) => f.lead).join(' '))}</p>
-      <p class="checked">${MONTH_YEAR} ranking. Broker rates checked ${RATES_DATE} against each broker’s official charges page.</p>
+      ${byline(root, `${MONTH_YEAR} ranking. Broker rates checked ${RATES_DATE} against each broker’s official charges page`)}
       <a class="cta" href="${root}#calculator">Check any NSE stock in the calculator</a>
     </header>
     <section class="panel prose-s" aria-labelledby="ab-h"><h2 id="ab-h">What ${article(SEG_WORD[f0.s])} ${SEG_WORD[f0.s]} trade costs</h2><p>${esc(cfg.about)}</p></section>
@@ -861,6 +1007,12 @@ const grp = (n) => groups.find((x) => x.name === n);
 const pairList = PAIR_NAMES.map(([a, b]) => ({ A: grp(a), B: grp(b) })).filter((p) => p.A && p.B).map((p) => Object.assign(p, { slug: p.A.slug + '-vs-' + p.B.slug }));
 const FEATURED = [['Zerodha', 'Groww'], ['Groww', 'Angel One'], ['Zerodha', 'Angel One'], ['Zerodha', 'Upstox'], ['Groww', 'Upstox'], ['Angel One', 'Upstox'], ['Zerodha', 'Dhan'], ['Groww', 'Dhan'], ['Zerodha', 'Kotak Neo'], ['Zerodha', 'ICICI Direct'], ['Zerodha', 'FYERS'], ['Upstox', 'Dhan']]
   .map(([a, b]) => pairList.find((p) => p.A.name === a && p.B.name === b)).filter(Boolean);
+/* Comparison pages kept in search engines' index: the most-searched match-ups (FEATURED) plus pairs
+   already earning Search Console impressions. The rest stay live and linked for visitors but carry
+   noindex and are left out of the sitemap, so a young domain is not judged on dozens of near-identical
+   pages. To promote a pair, add its slug here. */
+const INDEX_PAIRS = new Set(FEATURED.map((p) => p.slug).concat(['zerodha-vs-flattrade', 'groww-vs-icici-direct']));
+const indexedPair = (p) => INDEX_PAIRS.has(p.slug);
 const TIE = 1;
 const listSegs = (rows) => joinNames(rows.map((r) => SEG_WORD[r.s]));
 
@@ -921,7 +1073,8 @@ function vsPage(p) {
   const body = `    <header class="bp-head">
       <h1>${esc(A)} vs ${esc(B)}: which is cheaper?</h1>
       <p class="lead verdict">${esc(F.verdict)}</p>
-      <p class="checked">Checked ${RATES_DATE}. Totals include 18% GST, STT, exchange and SEBI fees, stamp duty and the DP charge on delivery sells.</p>
+      ${byline(root, `Rates checked ${RATES_DATE} against ${srcLinks(a)} and ${srcLinks(b)}`)}
+      <p class="checked">Totals include 18% GST, STT, exchange and SEBI fees, stamp duty and the DP charge on delivery sells.</p>
     </header>
     <section class="panel" aria-labelledby="vs-seg">
       <h2 id="vs-seg">Who is cheaper, segment by segment</h2>
@@ -980,7 +1133,7 @@ function vsPage(p) {
       <h2 class="h-gap">Cheapest broker by segment</h2>
       <ul class="cmp-links">${CHEAP.map((c) => `<li><a href="${root}${cheapUrl(c)}">${esc(cap(c.name))}</a></li>`).join('')}</ul>
     </section>`;
-  return guidePage({ title: `${A} vs ${B} Brokerage Charges ${YEAR}: Which Is Cheaper? | ${BRAND}`, desc: desc.length > 300 ? desc.slice(0, 297) + '…' : desc, canonical: url, root, body, calc: true,
+  return guidePage({ title: `${A} vs ${B} Brokerage Charges ${YEAR}: Which Is Cheaper? | ${BRAND}`, desc: desc.length > 300 ? desc.slice(0, 297) + '…' : desc, canonical: url, root, body, calc: true, noindex: !indexedPair(p),
     crumbs: [['Compare brokers', root + 'compare/'], [`${A} vs ${B}`, null]], jsonld: [articleLD(`${A} vs ${B}: brokerage charges compared`, url, '2026-10-31'), crumbsLD([['Compare brokers', SITE_URL + 'compare/'], [`${A} vs ${B}`, url]]), faqLD(qa)] });
 }
 
@@ -1172,10 +1325,10 @@ w('robots.txt', `User-agent: *\nAllow: /\n\nSitemap: ${SITE_URL}sitemap.xml\n`);
 const lastRates = istDate(status.ratesUpdatedAt || status.ratesCheckedAt || new Date().toISOString());
 const urls = [[SITE_URL, pricesISO > lastRates ? pricesISO : lastRates, 'daily', '1.0'], [SITE_URL + 'how-we-calculate/', lastRates, 'weekly', '0.6'], [SITE_URL + 'about/', lastRates, 'monthly', '0.4']].concat(groups.map((g) => [SITE_URL + 'brokers/' + g.slug + '/', lastRates, 'weekly', '0.8']))
   .concat([[SITE_URL + 'cheapest-broker/', lastRates, 'weekly', '0.8']], CHEAP.map((c) => [SITE_URL + cheapUrl(c), lastRates, 'weekly', '0.8']))
-  .concat([[SITE_URL + 'compare/', lastRates, 'weekly', '0.7']], pairList.map((p) => [SITE_URL + 'compare/' + p.slug + '/', lastRates, 'weekly', '0.7']))
+  .concat([[SITE_URL + 'compare/', lastRates, 'weekly', '0.7']], pairList.filter(indexedPair).map((p) => [SITE_URL + 'compare/' + p.slug + '/', lastRates, 'weekly', '0.7']))
   .concat([[SITE_URL + 'crypto/', CRYPTO.checkedAt.slice(0, 10), 'weekly', '0.7']]);
 w('urls.txt', urls.map((u) => u[0]).join('\n') + '\n');
 w('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map(([u, d, f, p]) => `  <url><loc>${esc(u)}</loc><lastmod>${d}</lastmod><changefreq>${f}</changefreq><priority>${p}</priority></url>`).join('\n')}\n</urlset>\n`);
 w('manifest.webmanifest', JSON.stringify({ name: 'DalalScope brokerage calculator', short_name: BRAND, start_url: './', scope: './', display: 'standalone', background_color: '#061020', theme_color: '#061020', icons: [{ src: 'assets/icon-192.png', sizes: '192x192', type: 'image/png' }, { src: 'assets/icon-512.png', sizes: '512x512', type: 'image/png' }, { src: 'assets/icon-512-maskable.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' }] }, null, 1));
 w('.nojekyll', '');
-console.log('built', OUT, 'pages:', urls.length, '(brokers ' + groups.length + ', cheapest ' + (CHEAP.length + 1) + ', comparisons ' + (pairList.length + 1) + ')');
+console.log('built', OUT, 'pages in sitemap:', urls.length, '(brokers ' + groups.length + ', cheapest ' + (CHEAP.length + 1) + ', comparisons ' + (pairList.filter(indexedPair).length + 1) + ' indexed of ' + (pairList.length + 1) + ')');

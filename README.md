@@ -9,7 +9,9 @@
 - `about/`, `how-we-calculate/`: who runs the site, data sources, corrections, the full formula and a public log of rate changes (`data/changes.json`)
 - `feed.xml`: RSS feed of broker news; `<key>.txt`: IndexNow key (changed pages are submitted to Bing and other IndexNow engines after each deploy by `scripts/indexnow.js`)
 - `index.html`: the calculator, a rate-card table and FAQ (static HTML for search engines), with a starter list of popular stocks inline; the full list of every NSE stock loads in the background
-- `brokers/<name>/`: one page per broker with its charges by segment, a typical trade's all-in cost, its rank, DP and AMC
+- `brokers/<name>/`: one page per broker with its charges by segment, a typical trade's all-in cost, its rank, DP and AMC, where it is cheap and costly, a line-by-line worked trade in a real stock at the latest close, its rate-change log and recent news, and the brokers priced closest to it
+- `compare/<a>-vs-<b>/`: head-to-head pages. Only the pairs in `INDEX_PAIRS` (the most-searched match-ups plus pairs with Search Console impressions) are indexable and in the sitemap; the rest carry `noindex, follow` so a young domain isn't judged on dozens of near-identical pages
+- Broker, comparison and cheapest-broker pages carry a byline linking to `about/` and the rate source; `dateModified` in structured data is the last real rate change, not the daily check
 - `sitemap.xml`, `robots.txt`, `404.html`, `manifest.webmanifest`, share image and icons
 
 ## How the data stays current
