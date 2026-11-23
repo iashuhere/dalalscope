@@ -1,0 +1,451 @@
+{
+ "note": "Hand-checked background and pricing history per broker. Every entry needs a source a reader can open. 'rules' (optional) lets the build work out what the change meant in rupees: from/to use the same rule format as brokers.json, plus 'min' for a minimum brokerage in rupees. Dates are when the change took effect (YYYY-MM-DD, or YYYY-MM when only the month is known).",
+ "checkedAt": "2026-11-23",
+ "brokers": {
+  "Zerodha": {
+   "founded": "2010",
+   "facts": [
+    [
+     "Started",
+     "2010, as a discount broker; equity delivery has been brokerage-free since December 2015",
+     "YourStory",
+     "https://yourstory.com/2025/09/zerodha-may-end-zero-brokerage-model-as-derivatives-curbs-slash-revenue-40"
+    ],
+    [
+     "Founder and CEO",
+     "Nithin Kamath",
+     "Business Today",
+     "https://www.businesstoday.in/markets/top-story/story/rs2000-20000-crore-saved-in-fees-in-10-years-nithin-kamath-defends-zerodhas-no-brokerage-delivery-stance-468812-2025-03-21"
+    ]
+   ],
+   "changes": [
+    {
+     "d": "2015-12-01",
+     "text": "Zerodha stopped charging brokerage on equity delivery for individual investors. Until then it charged 0.1% or ₹20 an order, whichever was lower; companies, firms and HUFs still pay that.",
+     "rules": {
+      "del": {
+       "from": {
+        "t": "l",
+        "a": 20,
+        "p": 0.001
+       },
+       "to": {
+        "t": "z"
+       }
+      }
+     },
+     "src": [
+      "Zerodha Z-Connect",
+      "https://zerodha.com/z-connect/general/zerodha-going-zero-brokerage"
+     ]
+    },
+    {
+     "d": "2026-04-01",
+     "text": "Accounts that fall short of the 50% cash-margin rule started paying ₹40 instead of ₹20 per intraday F&O order.",
+     "src": [
+      "Inc42",
+      "https://inc42.com/buzz/zerodha-raises-fo-charges-to-%E2%82%B940-per-order-for-certain-intraday-trades/"
+     ]
+    }
+   ]
+  },
+  "Groww": {
+   "founded": "2016",
+   "facts": [
+    [
+     "Started",
+     "2016 in Bengaluru, as a direct mutual fund platform; stocks and F&O came later",
+     "Groww",
+     "https://groww.in/blog/groww-makes-a-blockbuster-debut"
+    ],
+    [
+     "Listed",
+     "Parent company Billionbrains Garage Ventures listed on NSE and BSE on 12 Nov 2025",
+     "Business Today",
+     "https://www.businesstoday.in/markets/stocks/story/groww-shares-delivers-positive-surprise-on-d-st-debut-stock-lists-at-14-premium-501802-2025-11-12"
+    ]
+   ],
+   "changes": [
+    {
+     "d": "2025-06-21",
+     "text": "Groww raised its minimum brokerage per order from ₹2 to ₹5, and started passing on the depository charge on every sell (₹20 plus GST), which it had been absorbing until then.",
+     "rules": {
+      "del": {
+       "from": {
+        "t": "l",
+        "a": 20,
+        "p": 0.001,
+        "min": 2
+       },
+       "to": {
+        "t": "l",
+        "a": 20,
+        "p": 0.001,
+        "min": 5
+       }
+      }
+     },
+     "src": [
+      "Business Standard",
+      "https://www.business-standard.com/companies/news/groww-to-raise-minimum-brokerage-dp-and-mtf-charges-from-june-21-125052200669_1.html"
+     ]
+    }
+   ]
+  },
+  "Angel One": {
+   "founded": "1996",
+   "facts": [
+    [
+     "Started",
+     "1996 in Mumbai as Angel Broking, founded by Dinesh Thakkar; renamed Angel One in 2021",
+     "Wikipedia",
+     "https://en.wikipedia.org/wiki/Angel_One_(company)"
+    ],
+    [
+     "Listed",
+     "On NSE and BSE since 5 Oct 2020",
+     "Angel One investor relations",
+     "https://www.angelone.in/investor-relations/investor-information"
+    ]
+   ],
+   "changes": [
+    {
+     "d": "2024-11-01",
+     "text": "Angel One ended free equity delivery. Delivery orders now pay ₹20 or 0.1%, whichever is lower, with a ₹2 minimum.",
+     "rules": {
+      "del": {
+       "from": {
+        "t": "z"
+       },
+       "to": {
+        "t": "l",
+        "a": 20,
+        "p": 0.001,
+        "min": 2
+       }
+      }
+     },
+     "src": [
+      "Business Standard",
+      "https://www.business-standard.com/markets/news/angel-one-share-up-7-as-co-revises-brokerage-charges-check-new-rates-here-124100100394_1.html"
+     ]
+    },
+    {
+     "d": "2025-11-17",
+     "text": "The minimum on delivery orders went from ₹2 to ₹5, and intraday brokerage changed from ₹20 or 0.03% to ₹20 or 0.1% with a ₹5 minimum.",
+     "rules": {
+      "intra": {
+       "from": {
+        "t": "l",
+        "a": 20,
+        "p": 0.0003
+       },
+       "to": {
+        "t": "l",
+        "a": 20,
+        "p": 0.001,
+        "min": 5
+       }
+      },
+      "del": {
+       "from": {
+        "t": "l",
+        "a": 20,
+        "p": 0.001,
+        "min": 2
+       },
+       "to": {
+        "t": "l",
+        "a": 20,
+        "p": 0.001,
+        "min": 5
+       }
+      }
+     },
+     "src": [
+      "Angel One",
+      "https://www.angelone.in/news/product-updates/pricing-update-nov-2025-b2c"
+     ]
+    }
+   ]
+  },
+  "Upstox": {
+   "founded": "2009",
+   "facts": [
+    [
+     "Started",
+     "2009 as RKSV Securities, by Ravi Kumar, Raghu Kumar and Shrini Viswanath; Tiger Global is an investor",
+     "YourStory",
+     "https://yourstory.com/2021/11/jobs-roundup-upstox-fintech-startup-unicorn"
+    ]
+   ],
+   "changes": [
+    {
+     "d": "2021-09-21",
+     "text": "Customers who joined Upstox from this date pay up to ₹20 an order on equity delivery. Customers who joined earlier kept brokerage-free delivery.",
+     "rules": {
+      "del": {
+       "from": {
+        "t": "z"
+       },
+       "to": {
+        "t": "l",
+        "a": 20,
+        "p": 0.025
+       }
+      }
+     },
+     "src": [
+      "Upstox",
+      "https://upstox.com/?p=10659"
+     ]
+    },
+    {
+     "d": "2026-10-19",
+     "text": "Upstox set brokerage of 0.25% of the settled value on stock F&O positions that end in physical delivery.",
+     "src": [
+      "Upstox announcements",
+      "https://upstox.com/announcements/"
+     ]
+    }
+   ]
+  },
+  "Dhan": {
+   "founded": "2021",
+   "facts": [
+    [
+     "Started",
+     "Raise Financial Services was founded in January 2021 by Pravin Jadhav, former CEO of Paytm Money; the Dhan app launched in November 2021",
+     "YourStory",
+     "https://yourstory.com/2022/01/funding-alert-raise-financial-raises-22million-seriesa"
+    ],
+    [
+     "Based in",
+     "Goregaon, Mumbai; the broking entity is Raise Securities (formerly Moneylicious Securities)",
+     "Dhan",
+     "https://dhan.co/ai-info/"
+    ]
+   ],
+   "changes": []
+  },
+  "FYERS": {
+   "founded": "2015",
+   "facts": [
+    [
+     "Started",
+     "2015 in Bengaluru, by brothers Tejas, Yashas and Shreyas Khoday; bootstrapped",
+     "FYERS",
+     "https://fyers.in/llms.txt"
+    ]
+   ],
+   "changes": [
+    {
+     "d": "2024-10-01",
+     "text": "FYERS ended free equity delivery and now charges ₹20 or 0.3% an order, whichever is lower, citing SEBI's true-to-label circular. Intraday, F&O and MCX rates did not change.",
+     "rules": {
+      "del": {
+       "from": {
+        "t": "z"
+       },
+       "to": {
+        "t": "l",
+        "a": 20,
+        "p": 0.003
+       }
+      }
+     },
+     "src": [
+      "FYERS notice board",
+      "https://fyers.in/notice-board/revision-of-brokerage-mtf-interest-and-other-charges-effective-october-1-2024/"
+     ]
+    }
+   ]
+  },
+  "Kotak Neo": {
+   "facts": [
+    [
+     "Run by",
+     "Kotak Securities, which renamed its retail broking business Kotak Neo in October 2026",
+     "Business Minutes",
+     "https://www.businessminutes.in/2026/10/kotak-securities-rebrands-as-kotak-neo-unveils-unified-investment-ecosystem.html"
+    ]
+   ],
+   "changes": [
+    {
+     "d": "2020-11",
+     "text": "Kotak Securities launched its Trade Free plan with zero brokerage on intraday trades and ₹20 an order on F&O.",
+     "src": [
+      "Business Standard",
+      "https://www.business-standard.com/article/markets/kotak-securities-launches-plan-with-zero-brokerage-on-intra-day-trades-120112000029_1.html"
+     ]
+    },
+    {
+     "d": "2024-11-04",
+     "text": "For Trade Free subscribers, intraday trades went from free to ₹10 an order, while carry-forward F&O came down from ₹20 to ₹10 an order.",
+     "rules": {
+      "intra": {
+       "from": {
+        "t": "z"
+       },
+       "to": {
+        "t": "f",
+        "a": 10
+       }
+      },
+      "opt": {
+       "from": {
+        "t": "f",
+        "a": 20
+       },
+       "to": {
+        "t": "f",
+        "a": 10
+       }
+      }
+     },
+     "src": [
+      "Kotak Neo",
+      "https://www.kotakneo.com/bulletins/understanding-revised-fee-structure/"
+     ]
+    }
+   ]
+  },
+  "ICICI Direct": {
+   "facts": [
+    [
+     "Run by",
+     "ICICI Securities, which became a wholly owned subsidiary of ICICI Bank and was delisted on 24 Mar 2025",
+     "ICICI Bank filing to NSE",
+     "https://nsearchives.nseindia.com/corporate/team_sandeshc_25032025165332_ICICIBANK.pdf"
+    ]
+   ],
+   "changes": []
+  },
+  "HDFC Sky": {
+   "founded": "2023",
+   "facts": [
+    [
+     "Started",
+     "Launched by HDFC Securities in September 2023 with flat ₹20 pricing; unlike HDFC Securities' own app, it is open to people who don't bank with HDFC",
+     "Moneycontrol via TradingView",
+     "https://it.tradingview.com/news/moneycontrol:0f588c987094b:0-hdfc-sec-takes-on-zerodha-groww-with-new-platform-sky-bets-big-on-margin-trading-facility"
+    ],
+    [
+     "Run by",
+     "HDFC Securities, a subsidiary of HDFC Bank",
+     "HDFC Sky",
+     "https://hdfcsky.com/blogs/whats-brewing/hdfc-sky-tvcs-bring-premium-research-driven-investing-to-every-retail-investor"
+    ]
+   ],
+   "changes": []
+  },
+  "Shoonya": {
+   "founded": "2016",
+   "facts": [
+    [
+     "Started",
+     "2016, by brothers Tajinder and Sarvjeet Virk of the Finvasia group, as a zero-commission trading platform",
+     "Inc42",
+     "https://inc42.com/startups/how-shoonya-is-leveraging-ai-zero-brokerage-model-to-change-investing-trading-dynamics-in-india"
+    ]
+   ],
+   "changes": [
+    {
+     "d": "2024-12-02",
+     "text": "Shoonya ended zero brokerage on trading. Intraday, futures, currency and commodity orders now pay ₹5 or 0.03%, whichever is lower, and options a flat ₹5. Delivery stayed free.",
+     "rules": {
+      "intra": {
+       "from": {
+        "t": "z"
+       },
+       "to": {
+        "t": "l",
+        "a": 5,
+        "p": 0.0003
+       }
+      },
+      "opt": {
+       "from": {
+        "t": "z"
+       },
+       "to": {
+        "t": "f",
+        "a": 5
+       }
+      }
+     },
+     "src": [
+      "TradingQnA, quoting Shoonya's notice to clients",
+      "https://tradingqna.com/t/shoonya-no-more-free/175985"
+     ]
+    }
+   ]
+  },
+  "Paytm Money": {
+   "facts": [
+    [
+     "Started",
+     "2017 as a direct mutual fund platform owned by One97 Communications (Paytm); stock broking went live in August 2020",
+     "Business Standard",
+     "https://business-standard.com/amp/article/companies/paytm-money-goes-live-with-stockbroking-services-on-its-platform-120080401238_1.html"
+    ]
+   ],
+   "changes": [
+    {
+     "d": "2023-08-25",
+     "text": "New Paytm Money accounts pay ₹20 an order on delivery, intraday and F&O. Earlier users kept the rate they joined on: ₹0 delivery and ₹10 on intraday and F&O for those who joined before 5 Aug 2022, and ₹15 an order for those who joined between then and 25 Aug 2023.",
+     "src": [
+      "Paytm Money",
+      "https://www.paytmmoney.com/blog/brokerage-charges-increase-from-25th-aug-23-existing-users-will-continue-on-old-brokerage-charges/"
+     ]
+    }
+   ],
+   "founded": "2017"
+  },
+  "5paisa": {
+   "facts": [
+    [
+     "Started",
+     "2016, as the discount broking arm of IIFL; demerged and listed on NSE and BSE in November 2017",
+     "Business Standard",
+     "https://www.business-standard.com/article/markets/iifl-discount-broking-arm-5paisa-lists-117111601855_1.html"
+    ]
+   ],
+   "changes": []
+  },
+  "Sharekhan": {
+   "facts": [
+    [
+     "Owned by",
+     "Mirae Asset Financial Group, which completed its purchase of Sharekhan from BNP Paribas in November 2024; the broker now trades as Mirae Asset Sharekhan",
+     "Business Standard",
+     "https://www.business-standard.com/markets/news/mirae-asset-financial-gourp-completes-acquisition-of-sharekhan-124112800241_1.html"
+    ]
+   ],
+   "changes": []
+  },
+  "IIFL Capital": {
+   "facts": [
+    [
+     "Run by",
+     "IIFL Capital Services, the listed company known until November 2024 as IIFL Securities",
+     "NSE circular",
+     "https://nsearchives.nseindia.com/content/circulars/CML65252.pdf"
+    ]
+   ],
+   "changes": []
+  },
+  "Motilal Oswal": {
+   "founded": "1987",
+   "facts": [
+    [
+     "Started",
+     "1987 in Mumbai, as a small sub-broking unit set up by Motilal Oswal and Raamdeo Agrawal",
+     "Motilal Oswal Group",
+     "https://motilaloswalgroup.com/Our-Businesses/Financial-Services"
+    ]
+   ],
+   "changes": []
+  }
+ }
+}

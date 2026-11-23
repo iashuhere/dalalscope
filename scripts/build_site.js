@@ -320,7 +320,7 @@ function brokerPage(g) {
   const desc = clip(card + (leadFact && card.length < 110 ? ' ' + leadFact.text : ''), 158);
   const others = nearestGroups(g, 6);
   const vsWith = pairList.filter((p) => p.A === g || p.B === g).sort((x, y) => indexedPair(y) - indexedPair(x));
-  const jsonld = [Object.assign(articleLD(g.name + ' brokerage charges and calculator', canonical, trackedSince(g), mod), { about: { '@type': 'Organization', name: g.name, url: p0.links[0] ? p0.links[0][1] : undefined } }),
+  const jsonld = [Object.assign(articleLD(g.name + ' brokerage charges and calculator', canonical, trackedSince(g), mod), { about: { '@type': 'Organization', name: g.name, url: p0.links[0] ? p0.links[0][1] : undefined, foundingDate: (HIST[g.name] || {}).founded } }),
   { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
     { '@type': 'ListItem', position: 1, name: BRAND, item: SITE_URL },
     { '@type': 'ListItem', position: 2, name: 'Rate cards', item: SITE_URL + '#rate-cards' },
@@ -862,26 +862,80 @@ function stockExample(g, idx) {
     </section>`;
 }
 
-/* tracked-since date, logged rate changes and recent news for one broker */
+/* ---------- background, pricing history and news (data/history.json, data/news-archive.json) ---------- */
+const HIST = (readJSON(path.join(DATA, 'history.json'), { brokers: {} }).brokers) || {};
+const ARCHIVE = (readJSON(path.join(DATA, 'news-archive.json'), { items: [] }).items) || [];
+const ALL_NEWS = (() => { const seen = new Set(); return (newsDoc.items || []).concat(ARCHIVE).filter((n) => !seen.has(n.id) && seen.add(n.id)).sort((a, b) => b.d.localeCompare(a.d)); })();
+const newsFor = (g) => { const ids = new Set(g.plans.map((p) => p.news).filter(Boolean)); return ALL_NEWS.filter((n) => ids.has(n.who)); };
+const histDate = (d) => d.length === 7 ? MON[+d.slice(5, 7) - 1] + ' ' + d.slice(0, 4) : fmtISODate(d);
+/* one leg's brokerage under a rule from history.json: same caps as the engine, plus an explicit rupee minimum */
+function histLeg(r, s, v) {
+  if (!r || v <= 0) return 0;
+  const cap = s === 'del' || s === 'intra' ? 0.025 * v : Infinity;
+  if (r.t === 'z') return 0;
+  if (r.t === 'f') return Math.min(r.a, cap);
+  if (r.t === 'lot') return r.a;
+  let b = r.t === 'p' ? r.p * v : Math.min(r.a, r.p * v);
+  const mn = r.min != null ? r.min : r.mn ? 5 : 0;
+  if (b < mn) b = Math.min(mn, 0.025 * v);
+  return Math.min(b, cap);
+}
+const histTrip = (r, s, v) => 2 * histLeg(r, s, v) * 1.18;
+const HIST_SIZES = { del: [100000, 10000, 1000], intra: [100000, 25000, 1000], fut: [1000000, 100000], opt: [10000], cfut: [85000], copt: [1000], mfut: [600000], mopt: [10000] };
+/* "On a ₹1 lakh delivery buy and sell, brokerage with GST went from nothing to ₹47.20." at a size where the change shows */
+function thenNow(rules) {
+  return Object.keys(rules).map((s) => {
+    const { from, to } = rules[s];
+    const v = HIST_SIZES[s].find((x) => Math.abs(histTrip(from, s, x) - histTrip(to, s, x)) >= 0.01);
+    if (!v) return '';
+    const a = histTrip(from, s, v), b = histTrip(to, s, v);
+    const trade = PREM[s] ? `${amt(v)} of ${SEG_WORD[s]} premium bought and sold` : `a ${amt(v)} ${SEG_WORD[s]} buy and sell`;
+    return `On ${trade}, brokerage with GST went from ${a < 0.005 ? 'nothing' : inr(a)} to ${b < 0.005 ? 'nothing' : inr(b)}.`;
+  }).filter(Boolean).join(' ');
+}
+const srcLink = (name, url) => `<a href="${esc(url)}" target="_blank" rel="noopener">${esc(name)}</a>`;
+const histItems = (g, prefix) => ((HIST[g.name] || {}).changes || []).map((c) => ({ d: c.d,
+  html: `<time datetime="${esc(c.d)}">${histDate(c.d)}</time>: ${prefix && !c.text.startsWith(g.name) ? `<b>${esc(g.name)}.</b> ` : ''}${esc(c.text)}${c.rules ? ' ' + esc(thenNow(c.rules)) : ''} <span class="src">Source: ${srcLink(c.src[0], c.src[1])}</span>` }));
+const factList = (g) => ((HIST[g.name] || {}).facts || []);
+const newsLi = (n, withWho) => `<li><time datetime="${esc(n.d)}">${fmtISODate(n.d)}</time>: ${withWho && !n.title.startsWith(n.who) ? `<b>${esc(n.who)}:</b> ` : ''}<b>${esc(n.title)}.</b> ${esc(n.body)} ${srcLink(n.srcName, n.srcUrl)}</li>`;
+
+/* background, the dated story of its charges (researched and logged), and its news */
 function brokerHistory(g, root) {
   const items = changeLog.items || [];
   const mentions = items.filter((it) => it.changes.some((c) => c.includes(g.name)));
   const added = mentions.find((it) => it.changes.some((c) => /^Added /.test(c) && c.includes(g.name)));
   const sinceAt = added ? added.at : LAUNCH_AT;
-  const changes = mentions.filter((it) => it !== added).map((it) => ({ at: it.at, list: it.changes.filter((c) => c.includes(g.name)) }));
-  const ids = new Set(g.plans.map((p) => p.news).filter(Boolean));
-  const news = (newsDoc.items || []).filter((n) => ids.has(n.who)).slice(0, 4);
   const since = sinceAt ? fmtISODate(istDate(sinceAt)) : null;
-  const intro = changes.length
-    ? `DalalScope has tracked ${g.name}’s published rates since ${since} and logged ${changes.length === 1 ? 'one change' : changes.length + ' changes'}.`
-    : `No change to ${g.name}’s published rates since DalalScope started tracking them${since ? ` on ${since}` : ''}.`;
+  const logged = mentions.filter((it) => it !== added).map((it) => ({ d: istDate(it.at),
+    html: `<time datetime="${esc(it.at)}">${fmtISODate(istDate(it.at))}</time>: ${esc(it.changes.filter((c) => c.includes(g.name)).join('; '))} <span class="src">Logged by DalalScope</span>` }));
+  const story = histItems(g, false).concat(logged).sort((a, b) => b.d.localeCompare(a.d));
+  const facts = factList(g), news = newsFor(g).slice(0, 6);
+  const track = `DalalScope has checked ${g.name}’s charges page every day since ${since || 'it started tracking'}${logged.length ? ` and logged ${logged.length === 1 ? 'one change' : logged.length + ' changes'} in that time` : ', with no change to the published rates so far'}. Every change on any broker is listed on <a href="${root}how-we-calculate/#changes">How we calculate</a>.`;
   return `<section class="panel prose-s" aria-labelledby="hi-h">
-      <h2 id="hi-h">${esc(g.name)} rate changes and news</h2>
-      <p>${esc(intro)}</p>
-      ${changes.length ? `<ul class="notes">${changes.map((c) => `<li><time datetime="${esc(c.at)}">${fmtISODate(istDate(c.at))}</time>: ${esc(c.list.join('; '))}</li>`).join('')}</ul>` : ''}
-      <p>The rate card is re-checked against ${esc(g.name)}’s own charges page every day; every change on any broker is listed on <a href="${root}how-we-calculate/#changes">How we calculate</a>.</p>
-      ${news.length ? `<h3>Recent ${esc(g.name)} news</h3>
-      <ul class="notes">${news.map((n) => `<li><time datetime="${esc(n.d)}">${fmtISODate(n.d)}</time>: <b>${esc(n.title)}.</b> ${esc(n.body)} <a href="${esc(n.srcUrl)}" target="_blank" rel="noopener">${esc(n.srcName)}</a></li>`).join('')}</ul>` : ''}
+      <h2 id="hi-h">${esc(g.name)}${facts.length ? ': background, price changes and news' : ' rate changes and news'}</h2>
+      ${facts.length ? `<dl class="facts">${facts.map(([k, v, sn, su]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)} <span class="src">${srcLink(sn, su)}</span></dd></div>`).join('')}</dl>` : ''}
+      ${story.length ? `<h3>How ${esc(g.name)}’s charges have changed</h3>
+      <ul class="notes">${story.map((x) => `<li>${x.html}</li>`).join('')}</ul>` : ''}
+      <p>${track}</p>
+      ${news.length ? `<h3>${esc(g.name)} in the news</h3>
+      <ul class="notes">${news.map((n) => newsLi(n, false)).join('')}</ul>` : ''}
+    </section>`;
+}
+
+/* compare pages: both brokers' background and price changes on one timeline, and their latest news */
+function pairStory(p, root) {
+  const fa = factList(p.A)[0], fb = factList(p.B)[0];
+  const story = histItems(p.A, true).concat(histItems(p.B, true)).sort((a, b) => b.d.localeCompare(a.d));
+  const news = newsFor(p.A).concat(newsFor(p.B)).sort((a, b) => b.d.localeCompare(a.d)).slice(0, 4);
+  if (!fa && !fb && !story.length && !news.length) return '';
+  const bg = [[p.A, fa], [p.B, fb]].filter(([, f]) => f).map(([g, f]) => `<li><b>${esc(g.name)}</b> (${esc(f[0].toLowerCase())}): ${esc(f[1])}. <span class="src">${srcLink(f[2], f[3])}</span></li>`).join('');
+  return `<section class="panel prose-s" aria-labelledby="vs-hist">
+      <h2 id="vs-hist">How ${esc(p.A.name)} and ${esc(p.B.name)} got here</h2>
+      ${bg ? `<ul class="notes">${bg}</ul>` : ''}
+      ${story.length ? `<h3>Price changes over the years</h3>
+      <ul class="notes">${story.map((x) => `<li>${x.html}</li>`).join('')}</ul>` : `<p>${esc(`DalalScope has not found or logged a change to either broker’s brokerage since it started tracking them.`)}</p>`}
+      ${news.length ? `<h3>Latest news</h3>
+      <ul class="notes">${news.map((n) => newsLi(n, true)).join('')}</ul>` : ''}
     </section>`;
 }
 const trackedSince = (g) => { const it = (changeLog.items || []).find((x) => x.changes.some((c) => /^Added /.test(c) && c.includes(g.name))); const at = it ? it.at : LAUNCH_AT; return at ? istDate(at) : '2026-10-26'; };
@@ -1378,6 +1432,7 @@ function vsPage(p) {
     ${pairExample(p, diffs, idx)}
     ${sizeSec}
     ${yrSec}
+    ${pairStory(p, root)}
     ${miniCalc([a, b], `Try your own trade at ${A} and ${B}`)}
     <section class="panel" aria-labelledby="vs-rc">
       <h2 id="vs-rc">Rate cards side by side</h2>

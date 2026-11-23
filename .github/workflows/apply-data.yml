@@ -2,7 +2,7 @@ name: Apply news and rates from the hourly Claude run
 
 # The hourly Claude run pushes its updated data files to a new claude/data-<time> branch
 # (or the older fixed claude/data branch). This job checks them, copies only those four
-# files into main, publishes, then deletes the run's branch so the next run starts clean.
+# files into main, adds any new headlines to news-archive.json, publishes, then deletes the run's branch so the next run starts clean.
 on:
   push:
     branches: ['claude/data', 'claude/data-*']
@@ -33,10 +33,11 @@ jobs:
         run: |
           git fetch -q origin "$BRANCH"
           git checkout FETCH_HEAD -- data/news.json data/brokers.json data/status.json data/changes.json
+          python3 scripts/update_data.py archive
           python3 scripts/update_data.py validate
           git config user.name "iashuhere"
           git config user.email "iashuhere@users.noreply.github.com"
-          git add data/news.json data/brokers.json data/status.json data/changes.json
+          git add data/news.json data/news-archive.json data/brokers.json data/status.json data/changes.json
           if git diff --cached --quiet; then echo "Nothing new"; exit 0; fi
           echo "changed=$(git diff --cached --name-only | tr '\n' ' ')" >> "$GITHUB_OUTPUT"
           git commit -q -m "data: $(git log -1 --format=%s FETCH_HEAD)"

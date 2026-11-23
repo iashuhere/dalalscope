@@ -1,0 +1,258 @@
+{
+ "note": "Every headline that has appeared in news.json, kept so broker pages keep their news after it drops out of the latest 40. Maintained by scripts/update_data.py archive.",
+ "items": [
+  {
+   "id": "2026-11-17-sebi-mtf-free-float-limits",
+   "d": "2026-11-17",
+   "who": "SEBI",
+   "tag": "Rule change",
+   "title": "SEBI weighs stock-wise limits on margin trading funding",
+   "body": "Per a Reuters report, SEBI is considering barring fresh MTF positions in a stock once margin-funded holdings reach about 5-10% of its free float. MTF exposure is a record ₹1.53 lakh crore. Nothing is final; a consultation paper is expected first.",
+   "srcName": "Business Today",
+   "srcUrl": "https://www.businesstoday.in/markets/trending-stocks/story/sebi-mulls-limits-on-margin-trading-as-retail-leverage-hits-rs-1-53-lakh-crore-says-report-567824-2026-11-17",
+   "addedAt": "2026-11-18T04:12:01Z"
+  },
+  {
+   "id": "2026-11-13-sahi-commodity-futures-flat-fee",
+   "d": "2026-11-13",
+   "who": "Sahi",
+   "tag": "Pricing",
+   "title": "Sahi lists commodity futures at a flat ₹10 per order",
+   "body": "Sahi's charges page now shows commodity futures brokerage as a flat ₹10 per executed order, replacing the earlier lower of ₹10 or 0.05% of order value.",
+   "srcName": "Sahi charges page",
+   "srcUrl": "https://www.sahi.com/pricing",
+   "addedAt": "2026-11-13T05:12:26Z"
+  },
+  {
+   "id": "2026-11-06-zerodha-fund-house-renamed-case-funds",
+   "d": "2026-11-06",
+   "who": "Zerodha",
+   "tag": "Rebrand",
+   "title": "Zerodha Fund House renamed Zerodha CASE Funds as CASE Platforms joins",
+   "body": "Zerodha's mutual fund arm is now Zerodha CASE Funds, with CASE Platforms (formerly smallcase) as co-sponsor. It manages about ₹20,000 crore for over 12 lakh investors; schemes will be renamed but the passive, direct-plan approach is unchanged.",
+   "srcName": "Business Today",
+   "srcUrl": "https://www.businesstoday.in/personal-finance/story/zerodha-fund-house-becomes-zerodha-case-funds-as-investor-base-crosses-12-lakh-in-three-years-566285-2026-11-06",
+   "addedAt": "2026-11-09T00:11:49Z"
+  },
+  {
+   "id": "2026-11-06-industry-angel-one-overtakes-zerodha-no2",
+   "d": "2026-11-06",
+   "who": "Industry",
+   "tag": "Market share",
+   "title": "Angel One overtakes Zerodha as No. 2 broker by active NSE clients",
+   "body": "Angel One had 69.98 lakh active NSE clients at the end of October 2026, ahead of Zerodha's 67.6 lakh. Groww remains the largest with over 1.37 crore clients.",
+   "srcName": "Whalesbook",
+   "srcUrl": "https://www.whalesbook.com/news/English/brokerage-reports/Angel-One-Overtakes-Zerodha-to-Become-Indias-Second-Largest-Broker/6aed7c3c4fc30694db60bae1",
+   "addedAt": "2026-11-06T08:12:38Z"
+  },
+  {
+   "id": "2026-11-04-industry-stockal-borderless-unauthorised-us-trades",
+   "d": "2026-11-04",
+   "who": "Industry",
+   "tag": "Outage",
+   "title": "Stockal (Borderless) probes unauthorised sales in US stock accounts",
+   "body": "Stockal said 26 customer accounts appeared accessed with valid logins and 13 saw unauthorised trades, with holdings sold and proceeds put into illiquid stocks. It reports no platform breach, no funds withdrawn, and has added extra authentication; losses are unconfirmed.",
+   "srcName": "Business Today",
+   "srcUrl": "https://businesstoday.in/markets/story/stockal-shock-how-a-suspected-cyber-attack-may-have-put-crores-in-indian-investors-us-stock-holdings-at-risk-565679-2026-11-04",
+   "addedAt": "2026-11-04T22:12:04Z"
+  },
+  {
+   "id": "2026-11-03-zerodha-instant-withdrawal-limit-5-lakh",
+   "d": "2026-11-03",
+   "who": "Zerodha",
+   "tag": "New product",
+   "title": "Zerodha raises free instant withdrawal limit to ₹5 lakh a day",
+   "body": "Zerodha has lifted its instant withdrawal limit from ₹2 lakh to ₹5 lakh per day, free of charge. It works 9 AM to 6 PM including weekends and holidays, with one request a day and a ₹100 minimum.",
+   "srcName": "Business Today",
+   "srcUrl": "https://www.businesstoday.in/personal-finance/story/zerodha-raises-instant-withdrawal-limit-to-rs5-lakh-nithin-kamath-says-rs1-lakh-crore-paid-out-free-565433-2026-11-03",
+   "addedAt": "2026-11-09T00:11:49Z"
+  },
+  {
+   "id": "2026-10-30-hdfc-sky-direct-bank-linked-funding",
+   "d": "2026-10-30",
+   "who": "HDFC Sky",
+   "tag": "New product",
+   "title": "HDFC Sky launches SKY Direct bank-linked funding for HDFC Bank customers",
+   "body": "SKY Direct holds funds in the customer's HDFC Bank savings account as trading limits; only the amount used for executed trades moves to the broker at day end. It covers cash, F&O, MTF and stock SIPs, and enables DDPI automatically for those without it.",
+   "srcName": "The Tribune",
+   "srcUrl": "https://tribuneindia.com/news/business/hdfc-securities-launches-sky-direct-enabling-instant-trading-with-smart-bank-linked-funding",
+   "addedAt": "2026-10-30T07:12:01Z"
+  },
+  {
+   "id": "2026-10-25-sebi-weighs-terminal-safeguards-and",
+   "d": "2026-10-25",
+   "who": "SEBI",
+   "tag": "Rule change",
+   "title": "SEBI weighs terminal safeguards and size-based rules for brokers",
+   "body": "Proposals include tying trading terminals to MAC and static IP addresses to stop misuse, and compliance duties that scale with a broker’s size and reliance on technology. These are not final rules and no dates have been set.",
+   "srcName": "Kotak Neo News",
+   "srcUrl": "https://www.kotakneo.com/news/regulations/sebi-trading-terminal-safeguards-broker-compliance-ai-rules/",
+   "addedAt": "2026-10-26T12:00:00Z"
+  },
+  {
+   "id": "2026-10-23-sebi-margin-waiver-early-pay",
+   "d": "2026-10-23",
+   "who": "SEBI",
+   "tag": "Rule change",
+   "title": "SEBI waives margin on repeat cash trades after early pay-in",
+   "body": "A SEBI circular dated 22 October says clearing corporations will not collect margin on a client's later cash-segment trades, up to the early pay-in value accepted (lower of EPI done or shares sold). Clients can reuse sale proceeds the same day; reversing the sale removes the benefit.",
+   "srcName": "Outlook Money",
+   "srcUrl": "https://www.outlookmoney.com/invest/sebi-introduces-real-time-margin-waiver-for-cash-segment-trades",
+   "addedAt": "2026-10-28T14:16:36Z"
+  },
+  {
+   "id": "2026-10-23-sebi-margin-waiver-early-pay-in",
+   "d": "2026-10-23",
+   "who": "SEBI",
+   "tag": "Rule change",
+   "title": "SEBI waives margin on later cash trades after early pay-in of shares",
+   "body": "A SEBI circular dated 22 October lets clearing corporations skip margin on a client's later cash-segment trades, up to the value of shares sold and accepted for early pay-in. Sale proceeds can be reused the same day; buying back the sold stock reverses the benefit.",
+   "srcName": "Outlook Money",
+   "srcUrl": "https://www.outlookmoney.com/invest/sebi-introduces-real-time-margin-waiver-for-cash-segment-trades",
+   "addedAt": "2026-10-28T14:14:57Z"
+  },
+  {
+   "id": "2026-10-23-groww-opens-stock-trading-all",
+   "d": "2026-10-23",
+   "who": "Groww",
+   "tag": "New product",
+   "title": "Groww opens US stock trading to all users",
+   "body": "After a three-week pilot, every Groww user can buy over 10,000 US stocks and ETFs, including fractional shares. Brokerage is 0.1% of trade value; currency-conversion and bank fees are extra.",
+   "srcName": "Whalesbook",
+   "srcUrl": "https://www.whalesbook.com/news/English/brokerage-reports/Groww-Opens-US-Stock-Trading-To-All-Users/6adb88ed79a16deaeafc2598",
+   "addedAt": "2026-10-26T12:00:00Z"
+  },
+  {
+   "id": "2026-10-19-zerodha-opens-stock-investing-kite",
+   "d": "2026-10-19",
+   "who": "Zerodha",
+   "tag": "New product",
+   "title": "Zerodha opens US stock investing on Kite",
+   "body": "Eligible resident individuals can buy about 2,000 US companies and 1,000 ETFs from $1. Brokerage is 0.1% capped at $10 an order plus GST, with a 0.5% currency markup. Runs through India INX Global Access at GIFT City.",
+   "srcName": "Indian Startup News",
+   "srcUrl": "https://indianstartupnews.com/news/nithin-kamath-led-zerodha-launches-us-stock-investing-on-kite-offers-access-to-2000-companies-12689088",
+   "addedAt": "2026-10-26T12:00:00Z"
+  },
+  {
+   "id": "2026-10-19-angel-one-adds-shares-and-etfs",
+   "d": "2026-10-19",
+   "who": "Angel One",
+   "tag": "New product",
+   "title": "Angel One adds US shares and ETFs, brokerage-free until December",
+   "body": "US investing through GIFT City is rolling out in the app to selected users first, with full availability expected by mid-November. Brokerage is waived until December 2026; regulatory charges still apply.",
+   "srcName": "UNI India",
+   "srcUrl": "https://www.uniindia.com/business-economy/business-india-angel-one-us-stock-investing-rptng-in-dc-file/219558",
+   "addedAt": "2026-10-26T12:00:00Z"
+  },
+  {
+   "id": "2026-10-19-sebi-expiry-settlement-moves-off",
+   "d": "2026-10-19",
+   "who": "SEBI",
+   "tag": "Rule change",
+   "title": "Expiry settlement moves off the closing auction from 7 December",
+   "body": "Expiring stock derivatives will settle at each stock’s volume-weighted average price over the last 30 minutes of trading. Index contracts settle on index values built the same way. The closing auction still sets the cash close.",
+   "srcName": "Outlook Business",
+   "srcUrl": "https://www.outlookbusiness.com/markets/sebi-reworks-closing-auction-weeks-after-launch-ends-its-say-in-derivatives-settlement",
+   "addedAt": "2026-10-26T12:00:00Z"
+  },
+  {
+   "id": "2026-10-19-upstox-sets-brokerage-physically-settled",
+   "d": "2026-10-19",
+   "who": "Upstox",
+   "tag": "Pricing",
+   "title": "Upstox sets 0.25% brokerage on physically settled stock F&O",
+   "body": "Stock F&O positions left open into physical settlement are charged 0.25% of the settled value. Netted-off positions pay 0.1%, plus exchange charges.",
+   "srcName": "Upstox announcements",
+   "srcUrl": "https://upstox.com/announcements/",
+   "addedAt": "2026-10-26T12:00:00Z"
+  },
+  {
+   "id": "2026-10-16-angel-one-q2-profit-up-58",
+   "d": "2026-10-16",
+   "who": "Angel One",
+   "tag": "Growth",
+   "title": "Angel One Q2 profit rises 58% to ₹335 crore as users reach 4 crore",
+   "body": "Consolidated profit for July-September was ₹335 crore on gross revenue of ₹1,431.5 crore (up 18.9%). Operating margin was 45.1%, the user base hit 4 crore, and its share of retail equity turnover was 19.7%.",
+   "srcName": "Free Press Journal",
+   "srcUrl": "https://www.freepressjournal.in/business/angel-one-net-profit-jumps-582-to-335-crore-in-q2-fy27-total-users-reach-4-crore",
+   "addedAt": "2026-10-31T02:46:07Z"
+  },
+  {
+   "id": "2026-10-14-industry-angel-one-closes-zerodha",
+   "d": "2026-10-14",
+   "who": "Industry",
+   "tag": "Market share",
+   "title": "Angel One closes in on Zerodha for the No. 2 spot",
+   "body": "September NSE active clients: Groww 1.34 crore (29.16% share), Zerodha 67.92 lakh (down 5,313), Angel One 67.56 lakh (up 36,956). Upstox fell 10,343 to 18.54 lakh.",
+   "srcName": "Inc42",
+   "srcUrl": "https://inc42.com/buzz/brokers-in-september-groww-strengthens-lead-angel-one-closes-in-on-zerodha/",
+   "addedAt": "2026-10-26T12:00:00Z"
+  },
+  {
+   "id": "2026-10-10-dhan-crosses-lakh-active-clients",
+   "d": "2026-10-10",
+   "who": "Dhan",
+   "tag": "Growth",
+   "title": "Dhan crosses 11.2 lakh active clients",
+   "body": "Dhan added 13,624 active clients in September, the third-highest net addition among the top 10 brokers, and held 8th place on NSE. It was the twelfth straight month of growth.",
+   "srcName": "PNI News",
+   "srcUrl": "https://www.pninews.com/dhan-crosses-11-2-lakh-active-clients-records-third-highest-additions-among-top-10-brokers-in-september/",
+   "addedAt": "2026-10-26T12:00:00Z"
+  },
+  {
+   "id": "2026-10-09-kotak-neo-securities-renames-its-retail",
+   "d": "2026-10-09",
+   "who": "Kotak Neo",
+   "tag": "Rebrand",
+   "title": "Kotak Securities renames its retail business Kotak Neo",
+   "body": "Kotak Securities Ltd stays the legal entity and existing accounts are unchanged. The brand now spans trading, investing and wealth, including a Private Client Group and Connect Plus for distributors.",
+   "srcName": "Business Minutes",
+   "srcUrl": "https://www.businessminutes.in/2026/10/kotak-securities-rebrands-as-kotak-neo-unveils-unified-investment-ecosystem.html",
+   "addedAt": "2026-10-26T12:00:00Z"
+  },
+  {
+   "id": "2026-10-02-industry-upi-fee-payments-brokers",
+   "d": "2026-10-02",
+   "who": "Industry",
+   "tag": "Pricing",
+   "title": "0.02% UPI fee on payments to brokers starts 15 October",
+   "body": "UPI payments to brokers and mutual funds carry a 0.02% merchant fee capped at ₹300 (plus GST), paid by the broker. Reuters reports Zerodha and others are weighing new client charges or mandate-based payments to offset it.",
+   "srcName": "Reuters via TradingView",
+   "srcUrl": "https://www.tradingview.com/news/moodys:c12946d5a1409:0-brokerages-weigh-new-charges-mandates-as-upi-mdr-set-to-take-effect/",
+   "addedAt": "2026-10-26T12:00:00Z"
+  },
+  {
+   "id": "2026-10-01-sebi-brokers-must-show-investor",
+   "d": "2026-10-01",
+   "who": "SEBI",
+   "tag": "Rule change",
+   "title": "Brokers must show SEBI investor-awareness messages from 1 November",
+   "body": "The messages and risk disclosures go on every broker’s website landing page from 1 November 2026, and on app landing pages on alternate days.",
+   "srcName": "TaxGuru",
+   "srcUrl": "https://taxguru.in/sebi/sebi-mandates-investor-awareness-messages-broker-websites-apps-november-1.html",
+   "addedAt": "2026-10-26T12:00:00Z"
+  },
+  {
+   "id": "2026-04-01-zerodha-per-intraday-order-for",
+   "d": "2026-04-01",
+   "who": "Zerodha",
+   "tag": "Pricing",
+   "title": "₹40 per intraday F&O order for some Zerodha accounts",
+   "body": "Accounts that do not meet the 50% cash-margin requirement pay ₹40 instead of ₹20 per intraday F&O order. Equity delivery stays free.",
+   "srcName": "Inc42",
+   "srcUrl": "https://inc42.com/buzz/zerodha-raises-fo-charges-to-%E2%82%B940-per-order-for-certain-intraday-trades/",
+   "addedAt": "2026-10-26T12:00:00Z"
+  },
+  {
+   "id": "2026-04-01-sebi-stt-hike-takes-effect",
+   "d": "2026-04-01",
+   "who": "SEBI",
+   "tag": "Tax change",
+   "title": "F&O STT hike takes effect",
+   "body": "STT on futures rose from 0.02% to 0.05% of sell value, and on options from 0.10% to 0.15% of premium. STT on exercised options went from 0.125% to 0.15%.",
+   "srcName": "5paisa",
+   "srcUrl": "https://www.5paisa.com/news/stt-hike-on-fo-to-take-effect-from-april-1-amid-rising-options-activity",
+   "addedAt": "2026-10-26T12:00:00Z"
+  }
+ ]
+}

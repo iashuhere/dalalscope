@@ -22,6 +22,8 @@
 | `data/news.json` | Latest 40 broker headlines with short summaries | Scheduled Claude task, hourly 6:38 am to 10:38 pm IST, via `scripts/update_data.py news` |
 | `data/brokers.json` | Each broker plan's rate card | Scheduled Claude task, checked daily against official charges pages, via `scripts/update_data.py brokers` |
 | `data/changes.json` | Public log of every rate change | `scripts/update_data.py brokers` |
+| `data/history.json` | Background facts and dated pricing changes per broker, each with a source link; the build works out what each change meant in rupees | By hand, after checking the source |
+| `data/news-archive.json` | Every headline that has appeared in `news.json`, so broker pages keep their news | `scripts/update_data.py archive`, run by the apply-data workflow |
 | `data/status.json` | When news and rates were last checked or changed | `scripts/update_data.py` |
 
 Every push to `main` rebuilds and redeploys. Open pages re-check `data/` every three minutes, so visitors see updates without reloading.
