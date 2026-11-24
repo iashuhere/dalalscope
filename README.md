@@ -9,9 +9,9 @@
 - `about/`, `how-we-calculate/`: who runs the site, data sources, corrections, the full formula and a public log of rate changes (`data/changes.json`)
 - `feed.xml`: RSS feed of broker news; `<key>.txt`: IndexNow key (changed pages are submitted to Bing and other IndexNow engines after each deploy by `scripts/indexnow.js`)
 - `index.html`: the calculator, a rate-card table and FAQ (static HTML for search engines), with a starter list of popular stocks inline; the full list of every NSE stock loads in the background
-- `brokers/<name>/`: one page per broker with its charges by segment, a typical trade's all-in cost, its rank, DP and AMC, where it is cheap and costly, a line-by-line worked trade in a real stock at the latest close, its rate-change log and recent news, and the brokers priced closest to it
-- `compare/<a>-vs-<b>/`: head-to-head pages. Only the pairs in `INDEX_PAIRS` (the most-searched match-ups plus pairs with Search Console impressions) are indexable and in the sitemap; the rest carry `noindex, follow` so a young domain isn't judged on dozens of near-identical pages
-- Broker, comparison and cheapest-broker pages carry a byline linking to `about/` and the rate source; `dateModified` in structured data is the last real rate change, not the daily check
+- `brokers/<name>/`: one page per broker. The lead describes its rate card in one sentence (segments that share a rule are grouped) and the fact that most sets it apart; "Is it cheap?" costs seven trading patterns over a year and says who the plan suits and who pays more; then the charges by segment, a line-by-line delivery trade in a real stock, its rate-change log and news. Brokers with an identical stock and F&O rate card say so and point to what does differ (AMC, fine print)
+- `compare/<a>-vs-<b>/`: head-to-head pages that talk only about where two plans differ. Each segment is costed across realistic order sizes (or lot counts for options) to find where one side is cheaper, where they are level and where they swap; segments that cost the same get one line. Only the pairs in `INDEX_PAIRS` (the most-searched match-ups plus pairs with Search Console impressions) are indexable and in the sitemap; the rest carry `noindex, follow`
+- Broker, comparison and cheapest-broker pages carry a byline with the date the page last changed. `dateModified` and the sitemap `lastmod` are per page: the latest of `CONTENT_REVISED` in `scripts/build_site.js` (bump it when page copy is rewritten), the last logged rate change that touches that page, and for broker pages the newest news item about that broker. The daily rate check does not count
 - `sitemap.xml`, `robots.txt`, `404.html`, `manifest.webmanifest`, share image and icons
 
 ## How the data stays current
@@ -22,6 +22,8 @@
 | `data/news.json` | Latest 40 broker headlines with short summaries | Scheduled Claude task, hourly 6:38 am to 10:38 pm IST, via `scripts/update_data.py news` |
 | `data/brokers.json` | Each broker plan's rate card | Scheduled Claude task, checked daily against official charges pages, via `scripts/update_data.py brokers` |
 | `data/changes.json` | Public log of every rate change | `scripts/update_data.py brokers` |
+| `data/history.json` | Background facts and dated pricing changes per broker, each with a source link; the build works out what each change meant in rupees | By hand, after checking the source |
+| `data/news-archive.json` | Every headline that has appeared in `news.json`, so broker pages keep their news | `scripts/update_data.py archive`, run by the apply-data workflow |
 | `data/status.json` | When news and rates were last checked or changed | `scripts/update_data.py` |
 
 Every push to `main` rebuilds and redeploys. Open pages re-check `data/` every three minutes, so visitors see updates without reloading.

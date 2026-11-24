@@ -4,6 +4,7 @@
   python3 scripts/update_data.py brokers BROKERS.json  replace the broker list after a rate change (validated)
   python3 scripts/update_data.py checked news|rates     record that a check ran, even if nothing changed
   python3 scripts/update_data.py validate               check all data files (run before data reaches main)
+  python3 scripts/update_data.py archive                copy every headline in news.json into news-archive.json
 
 Every command prints what it changed and exits non-zero on bad input, leaving the files untouched.
 """
@@ -17,6 +18,7 @@ WHO = ['Zerodha', 'Groww', 'Angel One', 'Upstox', 'Dhan', 'FYERS', '5paisa', 'Ko
 TAGS = ['Pricing', 'New product', 'Rule change', 'Tax change', 'Market share', 'Growth', 'Outage', 'Penalty', 'Rebrand']
 SEGS = ['del', 'intra', 'fut', 'opt', 'cfut', 'copt', 'mfut', 'mopt']
 KEEP = 40
+ARCHIVE_PER_WHO = 30   # headlines kept per broker (or SEBI/Industry) in news-archive.json
 
 
 def now():
@@ -92,9 +94,32 @@ def cmd_news(path):
         save('news.json', {'updatedAt': now(), 'items': items})
         st['newsUpdatedAt'] = now()
     save('status.json', st)
+    cmd_archive(None)
     print('added %d, pruned %d, total %d' % (len(added), len(pruned), len(items)))
     for n in added:
         print('  +', n['d'], n['who'], '|', n['title'])
+
+
+def cmd_archive(_):
+    """Keep every headline that reaches news.json, so a broker's page keeps its news after it drops out of the latest 40."""
+    arch = load('news-archive.json', {'items': []})
+    items = arch.get('items', [])
+    have = {i['id'] for i in items} | {i['srcUrl'] for i in items}
+    n_new = 0
+    for n in load('news.json', {'items': []}).get('items', []):
+        if n['id'] in have or n['srcUrl'] in have:
+            continue
+        items.append(n); have.add(n['id']); have.add(n['srcUrl']); n_new += 1
+    items.sort(key=lambda i: (i['d'], i.get('addedAt', '')), reverse=True)
+    per, kept = {}, []
+    for i in items:
+        per[i['who']] = per.get(i['who'], 0) + 1
+        if per[i['who']] <= ARCHIVE_PER_WHO:
+            kept.append(i)
+    if n_new or len(kept) != len(items):
+        arch.update({'items': kept})
+        save('news-archive.json', arch)
+    print('archive: %d new, %d kept' % (n_new, len(kept)))
 
 
 def valid_rule(r):
@@ -201,6 +226,13 @@ def cmd_validate(_):
         if n['id'] in ids:
             die('duplicate news id %s' % n['id'])
         ids.add(n['id'])
+    arch = load('news-archive.json', {'items': []}).get('items', [])
+    aids = set()
+    for n in arch:
+        check_item(n)
+        if n['id'] in aids:
+            die('duplicate id in news-archive.json: %s' % n['id'])
+        aids.add(n['id'])
     lst = load('brokers.json', {}).get('list', [])
     if not (isinstance(lst, list) and 5 <= len(lst) <= 40):
         die('brokers.json must list 5-40 plans')
@@ -243,8 +275,8 @@ def cmd_checked(what):
 
 
 if __name__ == '__main__':
-    if len(sys.argv) == 2 and sys.argv[1] == 'validate':
-        cmd_validate(None)
+    if len(sys.argv) == 2 and sys.argv[1] in ('validate', 'archive'):
+        {'validate': cmd_validate, 'archive': cmd_archive}[sys.argv[1]](None)
         sys.exit(0)
     if len(sys.argv) != 3 or sys.argv[1] not in ('news', 'brokers', 'checked'):
         print(__doc__)
