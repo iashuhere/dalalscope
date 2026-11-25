@@ -86,7 +86,8 @@ jobs:
         run: |
           if [ "${{ github.event_name }}" = "push" ]; then
             if [ "${{ github.event.before }}" = "0000000000000000000000000000000000000000" ]; then CHANGED=ALL
-            else CHANGED=$(gh api "repos/${{ github.repository }}/compare/${{ github.event.before }}...${{ github.sha }}" --jq '.files[].filename' | tr '\n' ' '); fi
+            # brokers.json only counts when a rate changed, not when just its checkedAt timestamp moved
+            else CHANGED=$(gh api "repos/${{ github.repository }}/compare/${{ github.event.before }}...${{ github.sha }}" --jq '.files[] | select(.filename != "data/brokers.json" or ([(.patch // "") | split("\n")[] | select(test("^[-+][^-+]") and (test("\"checkedAt\"") | not))] | length > 0)) | .filename' | tr '\n' ' '); fi
           else
             CHANGED="${{ inputs.changed }} ${{ needs.build.outputs.changed }}"
           fi

@@ -5,7 +5,9 @@
  *
  *   SITE_URL=https://example.github.io/dalalscope/ CHANGED="data/news.json" node scripts/indexnow.js
  *
- * Only pages whose content changed are submitted; status-only commits submit nothing.
+ * Only pages whose content changed are submitted; status-only commits submit nothing. The workflows
+ * leave data/brokers.json out of CHANGED when only its checkedAt timestamp moved, so the daily rate
+ * check does not re-submit every page. Only sitemap URLs (indexable pages) are ever submitted.
  * Reads _site/urls.txt, so run scripts/build_site.js first.
  */
 'use strict';

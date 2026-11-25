@@ -39,14 +39,20 @@ jobs:
           git config user.email "iashuhere@users.noreply.github.com"
           git add data/news.json data/news-archive.json data/brokers.json data/status.json data/changes.json
           if git diff --cached --quiet; then echo "Nothing new"; exit 0; fi
-          echo "changed=$(git diff --cached --name-only | tr '\n' ' ')" >> "$GITHUB_OUTPUT"
+          CHANGED=$(git diff --cached --name-only | tr '\n' ' ')
+          echo "changed=$CHANGED" >> "$GITHUB_OUTPUT"
+          # For IndexNow, brokers.json only counts when a rate changed, not when the daily check
+          # just moved its checkedAt timestamp; otherwise every page would be pinged every day.
+          RATE_LINES=$(git diff --cached -U0 -- data/brokers.json | grep '^[-+][^-+]' | grep -v '"checkedAt"' || true)
+          if [ -z "$RATE_LINES" ]; then CHANGED=$(echo "$CHANGED" | sed 's#data/brokers.json##'); fi
+          echo "ping=$CHANGED" >> "$GITHUB_OUTPUT"
           git commit -q -m "data: $(git log -1 --format=%s FETCH_HEAD)"
           for i in 1 2 3; do git pull --rebase -q origin main && git push -q origin HEAD:main && break; sleep 5; done
       - name: Publish the site
         if: steps.copy.outputs.changed != ''
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh workflow run site.yml --ref main -f changed="${{ steps.copy.outputs.changed }}"
+        run: gh workflow run site.yml --ref main -f changed="${{ steps.copy.outputs.ping }}"
       - name: Delete the run's branch
         if: success() && startsWith(github.ref_name, 'claude/data-')
         run: git push -q origin --delete "$BRANCH" || true
