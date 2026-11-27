@@ -2,6 +2,17 @@
  "note": "Every headline that has appeared in news.json, kept so broker pages keep their news after it drops out of the latest 40. Maintained by scripts/update_data.py archive.",
  "items": [
   {
+   "id": "2026-11-27-sebi-ipo-grey-market-premium",
+   "d": "2026-11-27",
+   "who": "SEBI",
+   "tag": "Rule change",
+   "title": "SEBI asks brokers and intermediaries to stop publishing IPO grey market premiums",
+   "body": "A SEBI advisory of 23 November asks registered intermediaries, including brokers, to stop publishing and circulating IPO grey market premium figures, warning that grey market deals have no exchange protection. On 26 November SEBI said it is also weighing curbs on broker revenue from GMP platforms.",
+   "srcName": "Kotak Neo News",
+   "srcUrl": "https://www.kotakneo.com/news/regulations/sebi-targets-ipo-grey-market-premium-platforms-by-curbing-broker-and-intermediary-revenue/",
+   "addedAt": "2026-11-27T04:11:58Z"
+  },
+  {
    "id": "2026-11-17-sebi-mtf-free-float-limits",
    "d": "2026-11-17",
    "who": "SEBI",
